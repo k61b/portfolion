@@ -10,6 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"github.com/kayraberktuncer/portfolion/pkg/common/lib"
+	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
 
 type Storage struct {
@@ -44,15 +45,31 @@ func NewStorage() (*Storage, error) {
 	}, nil
 }
 
-func (s *Storage) GetUsers() (*mongo.Cursor, error) {
+func (s *Storage) CreateUser(user *models.User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	cursor, err := s.collection.Find(ctx, bson.M{})
-	if err != nil {
+	if _, err := s.collection.InsertOne(ctx, user); err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) GetUserByUsername(username string) (*models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var user models.User
+	if err := s.collection.FindOne(ctx, bson.M{"username": username}).Decode(&user); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
 		log.Fatal(err)
 		return nil, err
 	}
 
-	return cursor, nil
+	return &user, nil
 }
