@@ -24,6 +24,8 @@ func (h *Handlers) Run() {
 	app.Post("/session", h.Session)
 	app.Get("/auth", h.AuthMiddleware, h.Auth)
 	app.Get("/logout", h.AuthMiddleware, h.Logout)
+	app.Get("/bookmarks", h.AuthMiddleware, h.GetBookmarks)
+	app.Post("/bookmarks/create", h.AuthMiddleware, h.CreateBookmark)
 
 	app.Listen(h.listenAddr)
 }

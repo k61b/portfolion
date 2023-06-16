@@ -73,3 +73,32 @@ func (s *Storage) GetUserByUsername(username string) (*models.User, error) {
 
 	return &user, nil
 }
+
+func (s *Storage) CreateBookmark(username string, bookmark *models.Bookmark) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if _, err := s.collection.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$push": bson.M{"bookmarks": bookmark}}); err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) GetBookmarks(username string) ([]models.Bookmark, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var user models.User
+	if err := s.collection.FindOne(ctx, bson.M{"username": username}).Decode(&user); err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+
+		log.Fatal(err)
+		return nil, err
+	}
+
+	return user.Bookmarks, nil
+}

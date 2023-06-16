@@ -1,6 +1,11 @@
 package handlers
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -113,4 +118,82 @@ func (h *Handlers) Logout(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "success",
 	})
+}
+
+func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
+	var b models.Bookmark
+	if err := c.BodyParser(&b); err != nil {
+		return err
+	}
+
+	username := c.Locals("username").(string)
+	if username == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid username",
+		})
+	}
+
+	if err := h.store.CreateBookmark(username, &b); err != nil {
+		return err
+	}
+
+	return c.JSON(b)
+}
+
+func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
+	username := c.Locals("username").(string)
+	if username == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid username",
+		})
+	}
+
+	bookmarks, err := h.store.GetBookmarks(username)
+	if err != nil {
+		fmt.Println("Error retrieving bookmarks:", err)
+		return c.SendString("Error retrieving bookmarks")
+	}
+
+	var bookmarkResults []fiber.Map
+
+	for _, bookmark := range bookmarks {
+		url := fmt.Sprintf("https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=%s&apikey=%s", bookmark.Symbol, lib.GoDotEnvVariable("API_KEY"))
+
+		resp, err := http.Get(url)
+		if err != nil {
+			fmt.Println("Error making the request:", err)
+			continue
+		}
+		defer resp.Body.Close()
+
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			fmt.Println("Error reading the response body:", err)
+			continue
+		}
+
+		var data map[string]map[string]interface{}
+		err = json.Unmarshal(body, &data)
+		if err != nil {
+			fmt.Println("Error parsing JSON:", err)
+			continue
+		}
+
+		globalQuote := data["Global Quote"]
+
+		addedPrice := bookmark.Price
+		currentPrice, _ := strconv.ParseFloat(globalQuote["05. price"].(string), 64)
+		profitAndLoss := currentPrice - addedPrice
+
+		bookmarkResult := fiber.Map{
+			"symbol":          bookmark.Symbol,
+			"added_price":     addedPrice,
+			"current_price":   currentPrice,
+			"profit_and_loss": profitAndLoss,
+		}
+
+		bookmarkResults = append(bookmarkResults, bookmarkResult)
+	}
+
+	return c.JSON(bookmarkResults)
 }
