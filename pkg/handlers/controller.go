@@ -10,7 +10,7 @@ import (
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
 
-func (h *Handlers) authMiddleware(c *fiber.Ctx) error {
+func (h *Handlers) AuthMiddleware(c *fiber.Ctx) error {
 	token := c.Cookies("token")
 	if token == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -30,7 +30,7 @@ func (h *Handlers) authMiddleware(c *fiber.Ctx) error {
 	return c.Next()
 }
 
-func (h *Handlers) session(c *fiber.Ctx) error {
+func (h *Handlers) Session(c *fiber.Ctx) error {
 	var u models.User
 	if err := c.BodyParser(&u); err != nil {
 		return err
@@ -78,7 +78,7 @@ func (h *Handlers) session(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
-func (h *Handlers) auth(c *fiber.Ctx) error {
+func (h *Handlers) Auth(c *fiber.Ctx) error {
 	token := c.Cookies("token")
 	if token == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
@@ -99,4 +99,18 @@ func (h *Handlers) auth(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(user)
+}
+
+func (h *Handlers) Logout(c *fiber.Ctx) error {
+	cookie := fiber.Cookie{
+		Name:    "token",
+		Value:   "",
+		Path:    "/",
+		Expires: time.Now().Add(-time.Hour),
+	}
+	c.Cookie(&cookie)
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
 }

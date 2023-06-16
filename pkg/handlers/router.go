@@ -21,8 +21,9 @@ func NewHandlers(listenAddr string, store models.Store) *Handlers {
 func (h *Handlers) Run() {
 	app := fiber.New()
 
-	app.Post("/session", h.session)
-	app.Get("/auth", h.authMiddleware, h.auth)
+	app.Post("/session", h.Session)
+	app.Get("/auth", h.AuthMiddleware, h.Auth)
+	app.Get("/logout", h.AuthMiddleware, h.Logout)
 
 	app.Listen(h.listenAddr)
 }
