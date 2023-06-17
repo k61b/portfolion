@@ -19,6 +19,7 @@ type Store interface {
 }
 
 type Bookmark struct {
-	Symbol string  `json:"symbol"`
-	Price  float64 `json:"price"`
+	Symbol	string		`json:"symbol"`
+	Price		float64		`json:"price"`
+	Pieces	float64		`json:"pieces"`
 }

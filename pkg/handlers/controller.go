@@ -182,13 +182,15 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 		globalQuote := data["Global Quote"]
 
 		addedPrice := bookmark.Price
+		pieces := bookmark.Pieces
 		currentPrice, _ := strconv.ParseFloat(globalQuote["05. price"].(string), 64)
-		profitAndLoss := currentPrice - addedPrice
+		profitAndLoss := (currentPrice - addedPrice) * pieces
 
 		bookmarkResult := fiber.Map{
 			"symbol":          bookmark.Symbol,
 			"added_price":     addedPrice,
 			"current_price":   currentPrice,
+			"pieces":          pieces,
 			"profit_and_loss": profitAndLoss,
 		}
 
