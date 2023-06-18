@@ -1,9 +1,11 @@
 package handlers
 
 import (
+	"time"
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
 
 type Handlers struct {
@@ -20,6 +22,19 @@ func NewHandlers(listenAddr string, store models.Store) *Handlers {
 
 func (h *Handlers) Run() {
 	app := fiber.New()
+
+	app.Use(limiter.New(limiter.Config{
+		Max:        10,
+		Expiration: 1 * time.Minute,
+		KeyGenerator: func(c *fiber.Ctx) string {
+			return c.IP()
+		},
+		LimitReached: func(c *fiber.Ctx) error {
+			return c.Status(fiber.StatusTooManyRequests).JSON(fiber.Map{
+				"message": "Too many requests",
+			})
+		},
+	}))
 
 	app.Post("/session", h.Session)
 	app.Get("/auth", h.AuthMiddleware, h.Auth)
