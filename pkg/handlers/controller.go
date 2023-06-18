@@ -203,3 +203,51 @@ func (h *Handlers) DeleteBookmark(c *fiber.Ctx) error {
 		"message": "success",
 	})
 }
+
+func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
+	symbol := c.Params("symbol")
+	if symbol == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid symbol",
+		})
+	}
+
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=%s&apikey=%s", symbol, lib.GoDotEnvVariable("API_KEY"))
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return c.SendString("Error making the request")
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return c.SendString("Error reading the response body")
+	}
+
+	var data map[string]interface{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return c.SendString("Error parsing JSON")
+	}
+
+	results := data["bestMatches"].([]interface{})
+	var searchResults []fiber.Map
+
+	for _, result := range results {
+		searchResult := result.(map[string]interface{})
+
+		searchResultMap := fiber.Map{
+			"symbol":      searchResult["1. symbol"],
+			"name":        searchResult["2. name"],
+			"type":        searchResult["3. type"],
+			"region":      searchResult["4. region"],
+			"currency":    searchResult["8. currency"],
+			"match_score": searchResult["9. matchScore"],
+		}
+
+		searchResults = append(searchResults, searchResultMap)
+	}
+
+	return c.JSON(searchResults)
+}
