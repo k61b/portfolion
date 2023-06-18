@@ -6,6 +6,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
+	"github.com/gofiber/fiber/v2/middleware/cache"
 )
 
 type Handlers struct {
@@ -22,8 +23,8 @@ func NewHandlers(listenAddr string, store models.Store) *Handlers {
 
 func (h *Handlers) Run() {
 	app := fiber.New()
-
-	app.Use(limiter.New(limiter.Config{
+	
+	limit := limiter.New(limiter.Config{
 		Max:        10,
 		Expiration: 1 * time.Minute,
 		KeyGenerator: func(c *fiber.Ctx) string {
@@ -34,12 +35,19 @@ func (h *Handlers) Run() {
 				"message": "Too many requests",
 			})
 		},
-	}))
+	})
+
+	cachingMiddleware := cache.New(cache.Config{
+		Expiration:   1 * time.Minute,
+		CacheControl: true,
+	})
+
+	app.Use(limit)
 
 	app.Post("/session", h.Session)
 	app.Get("/auth", h.AuthMiddleware, h.Auth)
 	app.Get("/logout", h.AuthMiddleware, h.Logout)
-	app.Get("/bookmarks", h.AuthMiddleware, h.GetBookmarks)
+	app.Get("/bookmarks", cachingMiddleware, h.AuthMiddleware, h.GetBookmarks)
 	app.Post("/bookmarks/create", h.AuthMiddleware, h.CreateBookmark)
 
 	app.Listen(h.listenAddr)
