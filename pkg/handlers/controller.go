@@ -15,26 +15,6 @@ import (
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
 
-func (h *Handlers) AuthMiddleware(c *fiber.Ctx) error {
-	token := c.Cookies("token")
-	if token == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid token",
-		})
-	}
-
-	username, err := lib.ParseJWT(token)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid token",
-		})
-	}
-
-	c.Locals("username", username)
-
-	return c.Next()
-}
-
 func (h *Handlers) Session(c *fiber.Ctx) error {
 	var u models.User
 	if err := c.BodyParser(&u); err != nil {
