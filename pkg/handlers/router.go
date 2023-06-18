@@ -49,6 +49,7 @@ func (h *Handlers) Run() {
 	app.Get("/logout", h.AuthMiddleware, h.Logout)
 	app.Get("/bookmarks", cachingMiddleware, h.AuthMiddleware, h.GetBookmarks)
 	app.Post("/bookmarks/create", h.AuthMiddleware, h.CreateBookmark)
+	app.Delete("/bookmarks/:symbol", h.AuthMiddleware, h.DeleteBookmark)
 
 	app.Listen(h.listenAddr)
 }

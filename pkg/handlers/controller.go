@@ -179,3 +179,27 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 
 	return c.JSON(bookmarkResults)
 }
+
+func (h *Handlers) DeleteBookmark(c *fiber.Ctx) error {
+	symbol := c.Params("symbol")
+	if symbol == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid symbol",
+		})
+	}
+
+	username := c.Locals("username").(string)
+	if username == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid username",
+		})
+	}
+
+	if err := h.store.DeleteBookmark(username, symbol); err != nil {
+		return err
+	}
+
+	return c.JSON(fiber.Map{
+		"message": "success",
+	})
+}
