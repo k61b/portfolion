@@ -16,11 +16,12 @@ type Store interface {
 	GetUserByUsername(username string) (*User, error)
 	CreateBookmark(username string, bookmark *Bookmark) error
 	GetBookmarks(username string) ([]Bookmark, error)
+	UpdateBookmark(username string, symbol string, bookmark *Bookmark) error
 	DeleteBookmark(username string, symbol string) error
 }
 
 type Bookmark struct {
 	Symbol	string		`json:"symbol"`
-	Price		float64		`json:"price"`
+	Price		float64		`json:"added_price"`
 	Pieces	float64		`json:"pieces"`
 }

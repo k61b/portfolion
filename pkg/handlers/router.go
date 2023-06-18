@@ -48,7 +48,8 @@ func (h *Handlers) Run() {
 	app.Get("/auth", h.AuthMiddleware, h.Auth)
 	app.Get("/logout", h.AuthMiddleware, h.Logout)
 	app.Get("/bookmarks", cachingMiddleware, h.AuthMiddleware, h.GetBookmarks)
-	app.Post("/bookmarks/create", h.AuthMiddleware, h.CreateBookmark)
+	app.Post("/bookmarks", h.AuthMiddleware, h.CreateBookmark)
+	app.Put("/bookmarks/:symbol", h.AuthMiddleware, h.UpdateBookmark)
 	app.Delete("/bookmarks/:symbol", h.AuthMiddleware, h.DeleteBookmark)
 	app.Get("/search/:symbol", cachingMiddleware, h.AuthMiddleware, h.SearchSymbol)
 

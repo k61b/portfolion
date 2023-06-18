@@ -103,6 +103,18 @@ func (s *Storage) GetBookmarks(username string) ([]models.Bookmark, error) {
 	return user.Bookmarks, nil
 }
 
+func (s *Storage) UpdateBookmark(username string, symbol string, bookmark *models.Bookmark) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	if _, err := s.collection.UpdateOne(ctx, bson.M{"username": username, "bookmarks.symbol": symbol}, bson.M{"$set": bson.M{"bookmarks.$": bookmark}}); err != nil {
+		log.Fatal(err)
+		return err
+	}
+
+	return nil
+}
+
 func (s *Storage) DeleteBookmark(username string, symbol string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()

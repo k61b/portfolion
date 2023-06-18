@@ -180,6 +180,33 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 	return c.JSON(bookmarkResults)
 }
 
+func (h *Handlers) UpdateBookmark(c *fiber.Ctx) error {
+	symbol := c.Params("symbol")
+	if symbol == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid symbol",
+		})
+	}
+
+	var b models.Bookmark
+	if err := c.BodyParser(&b); err != nil {
+		return err
+	}
+
+	username := c.Locals("username").(string)
+	if username == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid username",
+		})
+	}
+
+	if err := h.store.UpdateBookmark(username, symbol, &b); err != nil {
+		return err
+	}
+
+	return c.JSON(b)
+}
+
 func (h *Handlers) DeleteBookmark(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	if symbol == "" {
