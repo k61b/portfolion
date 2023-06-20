@@ -27,9 +27,9 @@ jobs:
 
       - name: Test Go
         env:
-          DOTENV_PATH: ${{ github.workspace }}/absolute/path/to/.env
+          DOTENV_PATH: ${{ github.workspace }}/.env
         run: |
-          go run -mod=readonly github.com/joho/godotenv/cmd/godotenv
+          cp path/to/.env $DOTENV_PATH
           go test -v ./...
 
       - name: Lint Go code
