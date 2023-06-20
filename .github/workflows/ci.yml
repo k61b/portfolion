@@ -26,11 +26,7 @@ jobs:
         run: go build -v ./...
 
       - name: Test Go
-        env:
-          DOTENV_PATH: ${{ github.workspace }}/.env
-        run: |
-          cp ${{ github.workspace }}/.env $DOTENV_PATH
-          go test -v ./...
+        run: go test -v ./...
 
       - name: Lint Go code
         run: go fmt ./... | grep -vE "(\.pb\.go|\.gen\.go)"
