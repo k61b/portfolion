@@ -1,10 +1,10 @@
-name: Go
+name: Pre-check
 
 on:
   push:
-    branches: ["main"]
+    branches: [main]
   pull_request:
-    branches: ["main"]
+    branches: [main]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout code
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: Set up Go
         uses: actions/setup-go@v3
@@ -22,16 +22,16 @@ jobs:
       - name: Install Go dependencies
         run: go mod download
 
-      - name: Build
+      - name: Build Go
         run: go build -v ./...
 
-      - name: Test
+      - name: Test Go
         run: go test -v ./...
 
       - name: Lint Go code
         run: go fmt ./... | grep -vE "(\.pb\.go|\.gen\.go)"
 
-      - name: Checkout code
+      - name: Checkout code (Next.js)
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -39,7 +39,7 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
+      - name: Install Next.js dependencies
         working-directory: ./client
         run: npm ci
 
