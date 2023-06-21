@@ -18,10 +18,17 @@ type Store interface {
 	GetBookmarks(username string) ([]Bookmark, error)
 	UpdateBookmark(username string, symbol string, bookmark *Bookmark) error
 	DeleteBookmark(username string, symbol string) error
+	CreateOrUpdateSymbol(symbol *Symbol) error
+	GetSymbolValue(symbol string) (*Symbol, error)
 }
 
 type Bookmark struct {
-	Symbol	string		`json:"symbol"`
-	Price		float64		`json:"added_price"`
-	Pieces	float64		`json:"pieces"`
+	Symbol string  `json:"symbol"`
+	Price  float64 `json:"added_price"`
+	Pieces float64 `json:"pieces"`
+}
+
+type Symbol struct {
+	Symbol string  `json:"symbol"`
+	Price  float64 `json:"price"`
 }

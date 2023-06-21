@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"time"
+
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/cache"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 )
 
 type Handlers struct {
@@ -23,7 +24,7 @@ func NewHandlers(listenAddr string, store models.Store) *Handlers {
 
 func (h *Handlers) Run() {
 	app := fiber.New()
-	
+
 	limit := limiter.New(limiter.Config{
 		Max:        10,
 		Expiration: 1 * time.Minute,
