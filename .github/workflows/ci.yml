@@ -1,0 +1,48 @@
+name: Pre-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.19
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: Build Go
+        run: go build -v ./...
+
+      - name: Test Go
+        run: go test -v ./...
+
+      - name: Lint Go code
+        run: go fmt ./... | grep -vE "(\.pb\.go|\.gen\.go)"
+
+      - name: Checkout code (Next.js)
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Next.js dependencies
+        working-directory: ./client
+        run: npm ci
+
+      - name: Build Next.js app
+        working-directory: ./client
+        run: npm run build
