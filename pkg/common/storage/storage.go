@@ -14,8 +14,9 @@ import (
 )
 
 type Storage struct {
-	client     *mongo.Client
-	collection *mongo.Collection
+	client            *mongo.Client
+	usersCollection   *mongo.Collection
+	symbolsCollection *mongo.Collection
 }
 
 func NewStorage() (*Storage, error) {
@@ -37,11 +38,13 @@ func NewStorage() (*Storage, error) {
 	}
 
 	db := client.Database(lib.GoDotEnvVariable("MONGO_DB"))
-	collection := db.Collection(lib.GoDotEnvVariable("MONGO_COLLECTION"))
+	usersCollection := db.Collection(lib.GoDotEnvVariable("USERS_COLLECTION"))
+	symbolsCollection := db.Collection(lib.GoDotEnvVariable("SYMBOLS_COLLECTION"))
 
 	return &Storage{
-		client:     client,
-		collection: collection,
+		client:            client,
+		usersCollection:   usersCollection,
+		symbolsCollection: symbolsCollection,
 	}, nil
 }
 
@@ -49,7 +52,7 @@ func (s *Storage) CreateUser(user *models.User) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := s.collection.InsertOne(ctx, user); err != nil {
+	if _, err := s.usersCollection.InsertOne(ctx, user); err != nil {
 		log.Fatal(err)
 		return err
 	}
@@ -62,7 +65,7 @@ func (s *Storage) GetUserByUsername(username string) (*models.User, error) {
 	defer cancel()
 
 	var user models.User
-	if err := s.collection.FindOne(ctx, bson.M{"username": username}).Decode(&user); err != nil {
+	if err := s.usersCollection.FindOne(ctx, bson.M{"username": username}).Decode(&user); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
 		}
@@ -78,7 +81,7 @@ func (s *Storage) CreateBookmark(username string, bookmark *models.Bookmark) err
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := s.collection.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$push": bson.M{"bookmarks": bookmark}}); err != nil {
+	if _, err := s.usersCollection.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$push": bson.M{"bookmarks": bookmark}}); err != nil {
 		log.Fatal(err)
 		return err
 	}
@@ -91,7 +94,7 @@ func (s *Storage) GetBookmarks(username string) ([]models.Bookmark, error) {
 	defer cancel()
 
 	var user models.User
-	if err := s.collection.FindOne(ctx, bson.M{"username": username}).Decode(&user); err != nil {
+	if err := s.usersCollection.FindOne(ctx, bson.M{"username": username}).Decode(&user); err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, nil
 		}
@@ -107,7 +110,7 @@ func (s *Storage) UpdateBookmark(username string, symbol string, bookmark *model
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := s.collection.UpdateOne(ctx, bson.M{"username": username, "bookmarks.symbol": symbol}, bson.M{"$set": bson.M{"bookmarks.$": bookmark}}); err != nil {
+	if _, err := s.usersCollection.UpdateOne(ctx, bson.M{"username": username, "bookmarks.symbol": symbol}, bson.M{"$set": bson.M{"bookmarks.$": bookmark}}); err != nil {
 		log.Fatal(err)
 		return err
 	}
@@ -119,10 +122,45 @@ func (s *Storage) DeleteBookmark(username string, symbol string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := s.collection.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$pull": bson.M{"bookmarks": bson.M{"symbol": symbol}}}); err != nil {
+	if _, err := s.usersCollection.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$pull": bson.M{"bookmarks": bson.M{"symbol": symbol}}}); err != nil {
 		log.Fatal(err)
 		return err
 	}
 
 	return nil
+}
+
+func (s *Storage) CreateOrUpdateSymbol(symbol *models.Symbol) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	filter := bson.M{"symbol": symbol.Symbol}
+	update := bson.M{"$set": symbol}
+	opts := options.Update().SetUpsert(true)
+
+	_, err := s.symbolsCollection.UpdateOne(ctx, filter, update, opts)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	return nil
+}
+
+func (s *Storage) GetSymbolValue(symbol string) (*models.Symbol, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var symbolData models.Symbol
+	err := s.symbolsCollection.FindOne(ctx, bson.M{"symbol": symbol}).Decode(&symbolData)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, mongo.ErrNoDocuments
+		}
+
+		log.Println(err)
+		return nil, err
+	}
+
+	return &symbolData, nil
 }

@@ -29,7 +29,7 @@ jobs:
         run: go test -v ./...
 
       - name: Lint Go code
-        run: go fmt ./... | grep -vE "(\.pb\.go|\.gen\.go)"
+        run: go fmt ./... && go vet ./...
 
       - name: Checkout code (Next.js)
         uses: actions/checkout@v3
