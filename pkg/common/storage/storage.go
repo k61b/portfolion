@@ -164,3 +164,22 @@ func (s *Storage) GetSymbolValue(symbol string) (*models.Symbol, error) {
 
 	return &symbolData, nil
 }
+
+func (s *Storage) GetSymbols() ([]models.Symbol, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	var symbols []models.Symbol
+	cursor, err := s.symbolsCollection.Find(ctx, bson.M{})
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	if err = cursor.All(ctx, &symbols); err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return symbols, nil
+}

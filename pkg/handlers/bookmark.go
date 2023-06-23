@@ -6,102 +6,13 @@ import (
 	"io"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/mongo"
-	"golang.org/x/crypto/bcrypt"
 
 	"github.com/kayraberktuncer/portfolion/pkg/common/lib"
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
-
-func (h *Handlers) Session(c *fiber.Ctx) error {
-	var u models.User
-	if err := c.BodyParser(&u); err != nil {
-		return err
-	}
-
-	user, err := h.store.GetUserByUsername(u.Username)
-	if err != nil {
-		return err
-	}
-
-	if user == nil {
-		hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), 10)
-		if err != nil {
-			return err
-		}
-
-		u.Password = string(hash)
-
-		u.Bookmarks = []models.Bookmark{}
-
-		if err := h.store.CreateUser(&u); err != nil {
-			return err
-		}
-
-		user = &u
-	} else {
-		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(u.Password)); err != nil {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-				"message": "Invalid username or password",
-			})
-		}
-	}
-
-	token, err := lib.GenerateJWT(user.Username)
-	if err != nil {
-		return err
-	}
-
-	cookie := fiber.Cookie{
-		Name:    "token",
-		Value:   token,
-		Path:    "/",
-		Expires: time.Now().Add(time.Hour * 24),
-	}
-	c.Cookie(&cookie)
-
-	return c.JSON(user)
-}
-
-func (h *Handlers) Auth(c *fiber.Ctx) error {
-	token := c.Cookies("token")
-	if token == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Missing token",
-		})
-	}
-
-	username, err := lib.ParseJWT(token)
-	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid token",
-		})
-	}
-
-	user, err := h.store.GetUserByUsername(username)
-	if err != nil {
-		return err
-	}
-
-	return c.JSON(user)
-}
-
-func (h *Handlers) Logout(c *fiber.Ctx) error {
-	cookie := fiber.Cookie{
-		Name:    "token",
-		Value:   "",
-		Path:    "/",
-		Expires: time.Now().Add(-time.Hour),
-	}
-	c.Cookie(&cookie)
-
-	return c.JSON(fiber.Map{
-		"message": "success",
-	})
-}
 
 func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 	var b models.Bookmark
@@ -280,52 +191,4 @@ func (h *Handlers) DeleteBookmark(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "success",
 	})
-}
-
-func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
-	symbol := c.Params("symbol")
-	if symbol == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid symbol",
-		})
-	}
-
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=%s&apikey=%s", symbol, lib.GoDotEnvVariable("API_KEY"))
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return c.SendString("Error making the request")
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return c.SendString("Error reading the response body")
-	}
-
-	var data map[string]interface{}
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		return c.SendString("Error parsing JSON")
-	}
-
-	results := data["bestMatches"].([]interface{})
-	var searchResults []fiber.Map
-
-	for _, result := range results {
-		searchResult := result.(map[string]interface{})
-
-		searchResultMap := fiber.Map{
-			"symbol":      searchResult["1. symbol"],
-			"name":        searchResult["2. name"],
-			"type":        searchResult["3. type"],
-			"region":      searchResult["4. region"],
-			"currency":    searchResult["8. currency"],
-			"match_score": searchResult["9. matchScore"],
-		}
-
-		searchResults = append(searchResults, searchResultMap)
-	}
-
-	return c.JSON(searchResults)
 }
