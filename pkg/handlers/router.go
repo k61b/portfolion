@@ -48,11 +48,18 @@ func (h *Handlers) Run() {
 	app.Post("/session", h.Session)
 	app.Get("/auth", h.AuthMiddleware, h.Auth)
 	app.Get("/logout", h.AuthMiddleware, h.Logout)
-	app.Get("/bookmarks", cachingMiddleware, h.AuthMiddleware, h.GetBookmarks)
+	app.Get("/bookmarks", h.AuthMiddleware, h.GetBookmarks)
 	app.Post("/bookmarks", h.AuthMiddleware, h.CreateBookmark)
 	app.Put("/bookmarks/:symbol", h.AuthMiddleware, h.UpdateBookmark)
 	app.Delete("/bookmarks/:symbol", h.AuthMiddleware, h.DeleteBookmark)
 	app.Get("/search/:symbol", cachingMiddleware, h.AuthMiddleware, h.SearchSymbol)
+
+	go func() {
+		for {
+			h.UpdateSymbolValues()
+			time.Sleep(1 * time.Minute)
+		}
+	}()
 
 	app.Listen(h.listenAddr)
 }

@@ -20,6 +20,7 @@ type Store interface {
 	DeleteBookmark(username string, symbol string) error
 	CreateOrUpdateSymbol(symbol *Symbol) error
 	GetSymbolValue(symbol string) (*Symbol, error)
+	GetSymbols() ([]Symbol, error)
 }
 
 type Bookmark struct {
