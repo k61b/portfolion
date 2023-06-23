@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -177,7 +177,7 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 			}
 			defer resp.Body.Close()
 
-			body, err := ioutil.ReadAll(resp.Body)
+			body, err := io.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Println("Error reading the response body:", err)
 				continue
@@ -298,7 +298,7 @@ func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return c.SendString("Error reading the response body")
 	}
