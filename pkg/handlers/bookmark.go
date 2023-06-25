@@ -62,8 +62,7 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 
 	bookmarks, err := h.store.GetBookmarks(username)
 	if err != nil {
-		fmt.Println("Error retrieving bookmarks:", err)
-		return c.SendString("Error retrieving bookmarks")
+		return err
 	}
 
 	var bookmarkResults []fiber.Map
@@ -73,7 +72,6 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 
 		symbolData, err := h.store.GetSymbolValue(bookmark.Symbol)
 		if err != nil && err != mongo.ErrNoDocuments {
-			fmt.Println("Error retrieving symbol data:", err)
 			continue
 		}
 
@@ -83,21 +81,18 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 		} else {
 			resp, err := http.Get(url)
 			if err != nil {
-				fmt.Println("Error making the request:", err)
 				continue
 			}
 			defer resp.Body.Close()
 
 			body, err := io.ReadAll(resp.Body)
 			if err != nil {
-				fmt.Println("Error reading the response body:", err)
 				continue
 			}
 
 			var data map[string]map[string]interface{}
 			err = json.Unmarshal(body, &data)
 			if err != nil {
-				fmt.Println("Error parsing JSON:", err)
 				continue
 			}
 
@@ -109,7 +104,7 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 				symbolData.Price = currentPrice
 				err := h.store.CreateOrUpdateSymbol(symbolData)
 				if err != nil {
-					fmt.Println("Error updating symbol data:", err)
+					continue
 				}
 			} else {
 				newSymbol := &models.Symbol{
@@ -119,7 +114,7 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 
 				err := h.store.CreateOrUpdateSymbol(newSymbol)
 				if err != nil {
-					fmt.Println("Error creating symbol data:", err)
+					continue
 				}
 			}
 		}

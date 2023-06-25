@@ -81,7 +81,11 @@ func (s *Storage) CreateBookmark(username string, bookmark *models.Bookmark) err
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := s.usersCollection.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$push": bson.M{"bookmarks": bookmark}}); err != nil {
+	if _, err := s.usersCollection.UpdateOne(
+		ctx,
+		bson.M{"username": username},
+		bson.M{"$push": bson.M{"bookmarks": bookmark}},
+	); err != nil {
 		log.Fatal(err)
 		return err
 	}
@@ -110,7 +114,11 @@ func (s *Storage) UpdateBookmark(username string, symbol string, bookmark *model
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := s.usersCollection.UpdateOne(ctx, bson.M{"username": username, "bookmarks.symbol": symbol}, bson.M{"$set": bson.M{"bookmarks.$": bookmark}}); err != nil {
+	if _, err := s.usersCollection.UpdateOne(
+		ctx,
+		bson.M{"username": username, "bookmarks.symbol": symbol},
+		bson.M{"$set": bson.M{"bookmarks.$": bookmark}},
+	); err != nil {
 		log.Fatal(err)
 		return err
 	}
@@ -122,7 +130,11 @@ func (s *Storage) DeleteBookmark(username string, symbol string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	if _, err := s.usersCollection.UpdateOne(ctx, bson.M{"username": username}, bson.M{"$pull": bson.M{"bookmarks": bson.M{"symbol": symbol}}}); err != nil {
+	if _, err := s.usersCollection.UpdateOne(
+		ctx,
+		bson.M{"username": username},
+		bson.M{"$pull": bson.M{"bookmarks": bson.M{"symbol": symbol}}},
+	); err != nil {
 		log.Fatal(err)
 		return err
 	}
