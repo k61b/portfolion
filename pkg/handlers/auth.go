@@ -22,13 +22,12 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 	}
 
 	if user == nil {
-		hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), 10)
+		hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return err
 		}
 
 		u.Password = string(hash)
-
 		u.Bookmarks = []models.Bookmark{}
 
 		if err := h.store.CreateUser(&u); err != nil {
@@ -53,7 +52,7 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 		Name:    "token",
 		Value:   token,
 		Path:    "/",
-		Expires: time.Now().Add(time.Hour * 24),
+		Expires: time.Now().Add(24 * time.Hour),
 	}
 	c.Cookie(&cookie)
 

@@ -26,26 +26,41 @@ func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 
 	resp, err := http.Get(url)
 	if err != nil {
-		return c.SendString("Error making the request")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error making the request",
+		})
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return c.SendString("Error reading the response body")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error reading the response body",
+		})
 	}
 
 	var data map[string]interface{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
-		return c.SendString("Error parsing JSON")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error parsing JSON",
+		})
 	}
 
-	results := data["bestMatches"].([]interface{})
+	results, ok := data["bestMatches"].([]interface{})
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error retrieving search results",
+		})
+	}
+
 	var searchResults []fiber.Map
 
 	for _, result := range results {
-		searchResult := result.(map[string]interface{})
+		searchResult, ok := result.(map[string]interface{})
+		if !ok {
+			continue
+		}
 
 		searchResultMap := fiber.Map{
 			"symbol":      searchResult["1. symbol"],
@@ -122,7 +137,11 @@ func processSymbols(h *Handlers, symbols []models.Symbol) {
 			continue
 		}
 
-		globalQuote := data["Global Quote"]
+		globalQuote, ok := data["Global Quote"]
+		if !ok {
+			fmt.Println("Error retrieving global quote")
+			continue
+		}
 
 		currentPrice, _ := strconv.ParseFloat(globalQuote["05. price"].(string), 64)
 

@@ -54,12 +54,14 @@ func (h *Handlers) Run() {
 	app.Delete("/bookmarks/:symbol", h.AuthMiddleware, h.DeleteBookmark)
 	app.Get("/search/:symbol", cachingMiddleware, h.AuthMiddleware, h.SearchSymbol)
 
-	go func() {
-		for {
-			h.UpdateSymbolValues()
-			time.Sleep(1 * time.Minute)
-		}
-	}()
+	go h.UpdateSymbolValuesPeriodically(1 * time.Minute)
 
 	app.Listen(h.listenAddr)
+}
+
+func (h *Handlers) UpdateSymbolValuesPeriodically(interval time.Duration) {
+	for {
+		h.UpdateSymbolValues()
+		time.Sleep(interval)
+	}
 }
