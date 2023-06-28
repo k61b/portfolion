@@ -10,6 +10,15 @@ import (
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
 
+// Session godoc
+// @Summary User session
+// @Description Creates a new user session or retrieves an existing session
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param body body models.User true "User object"
+// @Success 200 {object} models.User
+// @Router /session [post]
 func (h *Handlers) Session(c *fiber.Ctx) error {
 	var u models.User
 	if err := c.BodyParser(&u); err != nil {
@@ -59,6 +68,15 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
+// Auth godoc
+// @Summary User authentication
+// @Description Retrieves the authenticated user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} models.User
+// @Router /auth [get]
 func (h *Handlers) Auth(c *fiber.Ctx) error {
 	token := c.Cookies("token")
 	if token == "" {
@@ -82,6 +100,15 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 	return c.JSON(user)
 }
 
+// Logout godoc
+// @Summary User logout
+// @Description Logs out the user
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Security ApiKeyAuth
+// @Success 200 {object} string
+// @Router /logout [get]
 func (h *Handlers) Logout(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:    "token",
