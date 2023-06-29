@@ -14,6 +14,16 @@ import (
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
 
+// CreateBookmark godoc
+// @Summary Create a new bookmark
+// @Description Creates a new bookmark for the authenticated user
+// @Tags bookmarks
+// @Accept json
+// @Produce json
+// @Param body body models.Bookmark true "Bookmark object"
+// @Success 200 {object} models.Bookmark
+// @Security ApiKeyAuth
+// @Router /bookmarks [post]
 func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 	var b models.Bookmark
 
@@ -52,6 +62,15 @@ func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 	return c.JSON(b)
 }
 
+// GetBookmarks godoc
+// @Summary Get all bookmarks
+// @Description Retrieves all bookmarks for the authenticated user
+// @Tags bookmarks
+// @Accept json
+// @Produce json
+// @Success 200 {array} models.Bookmark
+// @Security ApiKeyAuth
+// @Router /bookmarks [get]
 func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 	username := c.Locals("username").(string)
 	if username == "" {
@@ -137,6 +156,17 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 	return c.JSON(bookmarkResults)
 }
 
+// UpdateBookmark godoc
+// @Summary Update a bookmark
+// @Description Updates a bookmark for the authenticated user
+// @Tags bookmarks
+// @Accept json
+// @Produce json
+// @Param symbol path string true "Symbol"
+// @Param body body models.Bookmark true "Bookmark object"
+// @Success 200 {object} models.Bookmark
+// @Security ApiKeyAuth
+// @Router /bookmarks/{symbol} [put]
 func (h *Handlers) UpdateBookmark(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	if symbol == "" {
@@ -164,6 +194,16 @@ func (h *Handlers) UpdateBookmark(c *fiber.Ctx) error {
 	return c.JSON(b)
 }
 
+// DeleteBookmark godoc
+// @Summary Delete a bookmark
+// @Description Deletes a bookmark for the authenticated user
+// @Tags bookmarks
+// @Accept json
+// @Produce json
+// @Param symbol path string true "Symbol"
+// @Success 200 {object} string
+// @Security ApiKeyAuth
+// @Router /bookmarks/{symbol} [delete]
 func (h *Handlers) DeleteBookmark(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	if symbol == "" {

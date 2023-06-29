@@ -14,6 +14,16 @@ import (
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
 
+// CreateSymbol godoc
+// @Summary Create a new symbol
+// @Description Creates a new symbol
+// @Tags symbols
+// @Accept json
+// @Produce json
+// @Param body body models.Symbol true "Symbol object"
+// @Success 200 {object} models.Symbol
+// @Security ApiKeyAuth
+// @Router /symbols [post]
 func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	if symbol == "" {
@@ -83,6 +93,15 @@ const (
 	retryInterval   = 1 * time.Hour
 )
 
+// UpdateSymbolValues godoc
+// @Summary Update symbol values
+// @Description Updates symbol values
+// @Tags symbols
+// @Accept json
+// @Produce json
+// @Success 200
+// @Security ApiKeyAuth
+// @Router /symbols [put]
 func (h *Handlers) UpdateSymbolValues() {
 	symbols, err := h.store.GetSymbols()
 

@@ -8,6 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
+	_ "github.com/kayraberktuncer/portfolion/docs"
+	fiberSwagger "github.com/swaggo/fiber-swagger"
 )
 
 type Handlers struct {
@@ -44,6 +46,8 @@ func (h *Handlers) Run() {
 	})
 
 	app.Use(limit)
+
+	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
 	app.Post("/session", h.Session)
 	app.Get("/auth", h.AuthMiddleware, h.Auth)
