@@ -1,9 +1,11 @@
 'use client'
 import { postFetcher } from '@utils/fetch'
 import { useFormik } from 'formik'
+import { useRouter } from 'next/navigation'
 import * as Yup from 'yup'
 
 export default function AuthForm() {
+  const router = useRouter()
   const formik = useFormik({
     initialValues: {
       username: '',
@@ -15,6 +17,7 @@ export default function AuthForm() {
     }),
     onSubmit: async (body) => {
       await postFetcher(`/api/session`, body)
+      router.push('/dashboard')
     },
   })
 
