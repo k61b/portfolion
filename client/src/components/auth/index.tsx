@@ -1,5 +1,5 @@
 'use client'
-import { POST } from '@app/(auth)/route'
+import { postFetcher } from '@utils/fetch'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
 
@@ -14,8 +14,7 @@ export default function AuthForm() {
       password: Yup.string().required('Required'),
     }),
     onSubmit: async (body) => {
-      await POST('/api/session', body)
-      console.log(body)
+      await postFetcher(`/api/session`, body)
     },
   })
 
