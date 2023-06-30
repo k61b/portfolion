@@ -3,10 +3,12 @@ package handlers
 import (
 	"time"
 
+	"github.com/kayraberktuncer/portfolion/pkg/common/lib"
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cache"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	_ "github.com/kayraberktuncer/portfolion/docs"
 	fiberSwagger "github.com/swaggo/fiber-swagger"
@@ -47,16 +49,23 @@ func (h *Handlers) Run() {
 
 	app.Use(limit)
 
+	app.Use(cors.New(cors.Config{
+		AllowOrigins:     lib.GoDotEnvVariable("ALLOWED_ORIGINS"),
+		AllowCredentials: true,
+	}))
+
+	api := app.Group("/api")
+
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
-	app.Post("/session", h.Session)
-	app.Get("/auth", h.AuthMiddleware, h.Auth)
-	app.Get("/logout", h.AuthMiddleware, h.Logout)
-	app.Get("/bookmarks", h.AuthMiddleware, h.GetBookmarks)
-	app.Post("/bookmarks", h.AuthMiddleware, h.CreateBookmark)
-	app.Put("/bookmarks/:symbol", h.AuthMiddleware, h.UpdateBookmark)
-	app.Delete("/bookmarks/:symbol", h.AuthMiddleware, h.DeleteBookmark)
-	app.Get("/search/:symbol", cachingMiddleware, h.AuthMiddleware, h.SearchSymbol)
+	api.Post("/session", h.Session)
+	api.Get("/auth", h.AuthMiddleware, h.Auth)
+	api.Get("/logout", h.AuthMiddleware, h.Logout)
+	api.Get("/bookmarks", h.AuthMiddleware, h.GetBookmarks)
+	api.Post("/bookmarks", h.AuthMiddleware, h.CreateBookmark)
+	api.Put("/bookmarks/:symbol", h.AuthMiddleware, h.UpdateBookmark)
+	api.Delete("/bookmarks/:symbol", h.AuthMiddleware, h.DeleteBookmark)
+	api.Get("/search/:symbol", cachingMiddleware, h.AuthMiddleware, h.SearchSymbol)
 
 	go h.UpdateSymbolValuesPeriodically(1 * time.Minute)
 
