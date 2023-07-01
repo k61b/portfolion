@@ -1,21 +1,19 @@
-import Navbar from "@/components/navbar";
+import Navbar from '@components/navbar'
 
 export const metadata = {
-  title: "Dashboard",
-  description: "Dashboard for bookmarks",
-};
+  title: 'Dashboard',
+  description: 'Dashboard for bookmarks',
+}
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
-        <Navbar />
-        {children}
-      </body>
-    </html>
-  );
+    <section className="flex flex-col h-screen">
+      <Navbar />
+      <main className="flex flex-col flex-grow">{children}</main>
+    </section>
+  )
 }
