@@ -1,3 +1,4 @@
+basePath: /api
 definitions:
   models.Bookmark:
     properties:
