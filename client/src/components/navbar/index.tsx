@@ -24,12 +24,21 @@ export default function Navbar() {
       </div>
 
       <div className="flex flex-col items-center flex-shrink-0 text-white">
-        <div className="flex flex-row items-center">
-          <span className="text-sm mr-2">6161</span>
-        </div>
-        <div className="flex flex-row items-center">
-          <span className="text-md mr-2">6161</span>
-        </div>
+        {user && user.profit_and_loss < 0 ? (
+          <span className="font-semibold text-sm tracking-tight text-red-500">
+            {user?.profit_and_loss}
+          </span>
+        ) : (
+          <span className="font-semibold text-sm tracking-tight text-green-500">
+            {user?.profit_and_loss}
+          </span>
+        )}
+
+        {user && (
+          <span className="font-semibold text-2xl tracking-tight">
+            {user.value}
+          </span>
+        )}
       </div>
 
       <div className="flex items-center flex-shrink-0 text-white mr-6">
