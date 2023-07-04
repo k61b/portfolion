@@ -9,8 +9,8 @@ export default function DashboardLayout({
   children: React.ReactNode
 }) {
   return (
-    <section className="flex flex-col h-screen">
-      <main className="flex flex-col flex-grow">{children}</main>
+    <section /* className="flex flex-col h-screen" */>
+      <main /* className="flex flex-col flex-grow" */>{children}</main>
     </section>
   )
 }

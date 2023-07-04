@@ -7,7 +7,7 @@ export default function Navbar() {
   const { user } = useAuth()
 
   const handleLogout = async () => {
-    await fetcher('/logout')
+    await fetcher('/api/logout')
 
     window.location.href = '/login'
   }
