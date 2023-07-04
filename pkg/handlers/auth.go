@@ -97,7 +97,26 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 		return err
 	}
 
-	return c.JSON(user)
+	var value float64
+	var profitAndLoss float64
+	for _, bookmark := range user.Bookmarks {
+		symbol, err := h.store.GetSymbolValue(bookmark.Symbol)
+		if err != nil {
+			return err
+		}
+
+		value += symbol.Price * bookmark.Pieces
+		profitAndLoss += (symbol.Price - bookmark.Price) * bookmark.Pieces
+	}
+
+	userResult := fiber.Map{
+		"username":        user.Username,
+		"bookmarks":       user.Bookmarks,
+		"value":           value,
+		"profit_and_loss": profitAndLoss,
+	}
+
+	return c.JSON(userResult)
 }
 
 // Logout godoc
@@ -120,5 +139,40 @@ func (h *Handlers) Logout(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "success",
+	})
+}
+
+func (h *Handlers) UserBalance(c *fiber.Ctx) error {
+	token := c.Cookies("token")
+	if token == "" {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Missing token",
+		})
+	}
+
+	username, err := lib.ParseJWT(token)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "Invalid token",
+		})
+	}
+
+	user, err := h.store.GetUserByUsername(username)
+	if err != nil {
+		return err
+	}
+
+	var balance float64
+	for _, bookmark := range user.Bookmarks {
+		symbol, err := h.store.GetSymbolValue(bookmark.Symbol)
+		if err != nil {
+			return err
+		}
+
+		balance += symbol.Price * bookmark.Pieces
+	}
+
+	return c.JSON(fiber.Map{
+		"balance": balance,
 	})
 }

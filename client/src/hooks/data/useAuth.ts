@@ -8,6 +8,8 @@ export interface User {
     added_price: number
     pices: number
   }
+  value: number
+  profit_and_loss: number
 }
 
 export const useAuth = () => {
