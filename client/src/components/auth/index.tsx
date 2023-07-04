@@ -121,7 +121,7 @@ export default function AuthForm() {
           text-gray-500 text-lg
           "
           >
-            Don't have an account ?{" "}
+            {"Don't have an account ? "}
             <a href="#" className="text-blue-500 hover:text-blue-800">
               Create Account
             </a>
