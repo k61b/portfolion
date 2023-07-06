@@ -4,13 +4,14 @@ import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import * as Yup from "yup";
 import { Inter } from "next/font/google";
+import { Locale, getDictionary } from "@utils/i18n";
 
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
 });
 
-export default function AuthForm() {
+export default async function AuthForm({lang} : {lang: Locale} ) {
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -27,6 +28,8 @@ export default function AuthForm() {
     },
   });
 
+  const dictionary = await getDictionary(lang)
+
   return (
     <div className="bg-white dark:bg-slate-800 shadow-slate-600 shadow-2xl max-h-screen h-max max-w-max p-8 rounded-lg ">
       <div className={inter.className}>
@@ -40,7 +43,7 @@ export default function AuthForm() {
                 htmlFor="username"
                 className="block text-gray-700 dark:text-gray-200 text-sm font-bold mt-3 dark:text-white"
               >
-                Username
+                {dictionary.auth.username}
               </label>
               <input
                 id="username"
@@ -63,7 +66,7 @@ export default function AuthForm() {
                 htmlFor="password"
                 className="block text-gray-700 dark:text-gray-200 text-sm font-bold mt-3"
               >
-                Password
+                {dictionary.auth.password}
               </label>
               <input
                 id="password"
@@ -99,7 +102,7 @@ export default function AuthForm() {
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full mt-4"
           >
-            Sign In
+            {dictionary.auth.login}
           </button>
         </form>
         <div className="flex items-center mt-12">

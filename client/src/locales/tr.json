@@ -2,8 +2,9 @@
     "server-component": {
         "welcome": "Hoşgeldiniz"
     },
-    "counter": {
-        "increment": "Increment",
-        "decrement": "Decrement"
+    "auth": {
+        "username": "Kullanıcı Adı",
+        "password": "Şifre",
+        "login": "Giriş Yap"
     }
 }

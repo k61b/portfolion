@@ -2,8 +2,9 @@
     "server-component": {
         "welcome": "Welcome"
     },
-    "counter": {
-        "increment": "Increment",
-        "decrement": "Decrement"
+    "auth": {
+        "username": "Username",
+        "password": "Password",
+        "login": "Sign In"
     }
 }
