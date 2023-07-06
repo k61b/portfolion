@@ -1,4 +1,4 @@
-import Navbar from '@components/navbar'
+import Navbar from '@app/[lang]/dashboard/components/navbar'
 
 export const metadata = {
   title: 'Dashboard',

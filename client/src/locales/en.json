@@ -1,0 +1,10 @@
+{
+    "server-component": {
+        "welcome": "Welcome"
+    },
+    "auth": {
+        "username": "Username",
+        "password": "Password",
+        "login": "Sign In"
+    }
+}

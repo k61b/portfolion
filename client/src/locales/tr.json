@@ -1,0 +1,10 @@
+{
+    "server-component": {
+        "welcome": "Hoşgeldiniz"
+    },
+    "auth": {
+        "username": "Kullanıcı Adı",
+        "password": "Şifre",
+        "login": "Giriş Yap"
+    }
+}
