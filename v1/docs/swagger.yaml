@@ -1,4 +1,4 @@
-basePath: /api
+basePath: /api/v1
 definitions:
   models.Bookmark:
     properties:
@@ -161,6 +161,27 @@ paths:
       summary: User logout
       tags:
       - auth
+  /search/{symbol}:
+    get:
+      consumes:
+      - application/json
+      description: Get Searched symbols
+      parameters:
+      - description: Symbol
+        in: path
+        name: symbol
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Symbol'
+      summary: Get Searched symbols
+      tags:
+      - Symbols
   /session:
     post:
       consumes:
@@ -183,42 +204,4 @@ paths:
       summary: User session
       tags:
       - auth
-  /symbols:
-    post:
-      consumes:
-      - application/json
-      description: Creates a new symbol
-      parameters:
-      - description: Symbol object
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/models.Symbol'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Symbol'
-      security:
-      - ApiKeyAuth: []
-      summary: Create a new symbol
-      tags:
-      - symbols
-    put:
-      consumes:
-      - application/json
-      description: Updates symbol values
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-      security:
-      - ApiKeyAuth: []
-      summary: Update symbol values
-      tags:
-      - symbols
 swagger: "2.0"

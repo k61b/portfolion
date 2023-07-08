@@ -54,7 +54,7 @@ func (h *Handlers) Run() {
 		AllowCredentials: true,
 	}))
 
-	api := app.Group("/api")
+	api := app.Group("/api/v1")
 
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
 
@@ -65,7 +65,7 @@ func (h *Handlers) Run() {
 	api.Post("/bookmarks", h.AuthMiddleware, h.CreateBookmark)
 	api.Put("/bookmarks/:symbol", h.AuthMiddleware, h.UpdateBookmark)
 	api.Delete("/bookmarks/:symbol", h.AuthMiddleware, h.DeleteBookmark)
-	api.Get("/search/:symbol", cachingMiddleware, h.AuthMiddleware, h.SearchSymbol)
+	api.Get("/search/:symbol", cachingMiddleware, h.SearchSymbol)
 
 	go h.UpdateSymbolValuesPeriodically(1 * time.Minute)
 

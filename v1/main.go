@@ -12,7 +12,7 @@ import (
 // @description This is a sample server Portfolion server.
 // @version 0.1
 // @host localhost:6161
-// @BasePath /api
+// @BasePath /api/v1
 func main() {
 	store, err := storage.NewStorage()
 	if err != nil {
