@@ -1,64 +1,76 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: ["class"],
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
-  ],
-  darkMode: "class",
+    './pages/**/*.{ts,tsx}',
+    './components/**/*.{ts,tsx}',
+    './app/**/*.{ts,tsx}',
+    './src/**/*.{ts,tsx}',
+	],
   theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: {
+        "2xl": "1400px",
+      },
+    },
     extend: {
       colors: {
-        white: "var(--color-white)",
-        black: "var(--color-black)",
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          50: "var(--color-primary-50)",
-          100: "var(--color-primary-100)",
-          200: "var(--color-primary-200)",
-          300: "var(--color-primary-300)",
-          400: "var(--color-primary-400)",
-          500: "var(--color-primary-500)",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          100: "var(--color-secondary-100)",
-          200: "var(--color-secondary-200)",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
-        background: {
-          50: "var(--color-background-50)",
-          100: "var(--color-background-100)",
-          200: "var(--color-background-200)",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
-        green: {
-          100: "var(--color-green-100)",
-          800: "var(--color-green-800)",
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
-        red: {
-          100: "var(--color-red-100)",
-          800: "var(--color-red-800)",
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
         },
-        yellow: {
-          100: "var(--color-yellow-100)",
-          800: "var(--color-yellow-800)",
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
-        success: "var(--color-success)",
-        error: "var(--color-error)",
-        text: "var(--color-text)",
-        border: "var(--color-border)",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
       },
-      height: {
-        header: "70px",
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
-      width: {
-        sidebar: "320px",
+      keyframes: {
+        "accordion-down": {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
+        },
       },
-    },
-    screens: {
-      xl: { max: "1349px" },
-      lg: { max: "1023px" },
-      md: { max: "767px" },
-      sm: { max: "639px" },
-      xs: { max: "479px" },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
     },
   },
-  plugins: [],
-};
+  plugins: [require("tailwindcss-animate")],
+}
