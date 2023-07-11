@@ -30,7 +30,7 @@ func (h *Handlers) Run() {
 	app := fiber.New()
 
 	limit := limiter.New(limiter.Config{
-		Max:        10,
+		Max:        20,
 		Expiration: 1 * time.Minute,
 		KeyGenerator: func(c *fiber.Ctx) string {
 			return c.IP()
