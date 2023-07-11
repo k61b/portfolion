@@ -1,0 +1,21 @@
+{
+    "login": {
+        "title": "Giriş",
+        "username": "Kullanıcı Adı",
+        "password": "Şifre",
+        "your": "Bu senin {{text}}",
+        "error": {
+            "title": "Hata",
+            "back-to-login": "Girişe Dön"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Hoşgeldin {{name}}",
+        "logout": "Çıkış Yap",
+        "error": {
+            "title": "Dashboard'ı görebilmek için giriş yapmalısınız.",
+            "back-to-login": "Girişe Dön"
+        }
+    }
+}

@@ -7,6 +7,7 @@ import ErrorPage from './pages/error-page'
 import Login from './routes/login'
 import Dashboard from './routes/dashboard'
 import { AuthProvider } from './context/auth'
+import '@/lib/i18n'
 
 const router = createBrowserRouter([
   {
