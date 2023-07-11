@@ -1,10 +1,10 @@
-import { useRouteError } from "react-router-dom";
-import { IError } from "@/types/error";
-import { Link } from "react-router-dom";
+import { useRouteError } from 'react-router-dom'
+import { IError } from '@/types/error'
+import { Link } from 'react-router-dom'
 
 export default function ErrorPage() {
-  const error = useRouteError() as IError;
-  console.log(error);
+  const error = useRouteError() as IError
+  console.log(error)
 
   return (
     <div
@@ -16,12 +16,12 @@ export default function ErrorPage() {
       <p>
         <i>{error.statusText || error.message}</i>
         <Link
-          to={"/"}
-          className="italic underline underline-offset-1 text-purple-800"
+          to={'/'}
+          className="italic underline underline-offset-1 text-slate-800"
         >
           Go to the home page
         </Link>
       </p>
     </div>
-  );
+  )
 }
