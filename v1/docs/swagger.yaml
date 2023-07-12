@@ -50,7 +50,7 @@ paths:
       - ApiKeyAuth: []
       summary: User authentication
       tags:
-      - auth
+      - Auth
   /bookmarks:
     get:
       consumes:
@@ -69,7 +69,7 @@ paths:
       - ApiKeyAuth: []
       summary: Get all bookmarks
       tags:
-      - bookmarks
+      - Bookmarks
     post:
       consumes:
       - application/json
@@ -90,9 +90,9 @@ paths:
             $ref: '#/definitions/models.Bookmark'
       security:
       - ApiKeyAuth: []
-      summary: Create a new bookmark
+      summary: Create a new Bookmark
       tags:
-      - bookmarks
+      - Bookmarks
   /bookmarks/{symbol}:
     delete:
       consumes:
@@ -115,7 +115,7 @@ paths:
       - ApiKeyAuth: []
       summary: Delete a bookmark
       tags:
-      - bookmarks
+      - Bookmarks
     put:
       consumes:
       - application/json
@@ -143,7 +143,7 @@ paths:
       - ApiKeyAuth: []
       summary: Update a bookmark
       tags:
-      - bookmarks
+      - Bookmarks
   /logout:
     get:
       consumes:
@@ -160,12 +160,12 @@ paths:
       - ApiKeyAuth: []
       summary: User logout
       tags:
-      - auth
+      - Auth
   /search/{symbol}:
     get:
       consumes:
       - application/json
-      description: Get Searched symbols
+      description: Search symbol
       parameters:
       - description: Symbol
         in: path
@@ -179,7 +179,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Symbol'
-      summary: Get Searched symbols
+      summary: Search symbol
       tags:
       - Symbols
   /session:
@@ -203,5 +203,5 @@ paths:
             $ref: '#/definitions/models.User'
       summary: User session
       tags:
-      - auth
+      - Auth
 swagger: "2.0"

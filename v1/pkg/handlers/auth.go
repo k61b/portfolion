@@ -13,7 +13,7 @@ import (
 // Session godoc
 // @Summary User session
 // @Description Creates a new user session or retrieves an existing session
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Param body body models.User true "User object"
@@ -71,7 +71,7 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 // Auth godoc
 // @Summary User authentication
 // @Description Retrieves the authenticated user
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
@@ -122,7 +122,7 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 // Logout godoc
 // @Summary User logout
 // @Description Logs out the user
-// @Tags auth
+// @Tags Auth
 // @Accept json
 // @Produce json
 // @Security ApiKeyAuth
