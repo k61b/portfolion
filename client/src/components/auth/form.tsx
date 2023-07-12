@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useTranslation } from 'react-i18next';
 
 const schema = z.object({
   username: z
@@ -38,6 +39,7 @@ export function AuthForm() {
   const navigate = useNavigate()
   const { setUser } = useContext(AuthContext)
   const [error, setError] = useState(null)
+  const { t } = useTranslation();
 
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
@@ -67,9 +69,9 @@ export function AuthForm() {
       <div className="flex flex-col items-center justify-center h-screen">
         <div className="flex flex-col items-center justify-center space-y-4">
           <h1 className="text-4xl font-bold">Error</h1>
-          <p className="text-lg">{error}</p>
+          <p className="text-lg">{t("login.error.title")}</p>
           <Link to="/login" className="text-slate-700">
-            Go back to login
+            {t("login.error.back-to-login")}
           </Link>
         </div>
       </div>
@@ -84,12 +86,12 @@ export function AuthForm() {
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>{t("login.username")}</FormLabel>
               <FormControl>
                 <Input placeholder="username" {...field} />
               </FormControl>
               <FormDescription>
-                This is your public display name.
+                {t("login.your", {text: t("login.username")})}
               </FormDescription>
               <FormMessage />
             </FormItem>
@@ -100,17 +102,17 @@ export function AuthForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t("login.password")}</FormLabel>
               <FormControl>
                 <Input placeholder="password" {...field} type='password' />
               </FormControl>
-              <FormDescription>This is your private password.</FormDescription>
+              <FormDescription>{t("login.your", {text: t("login.password")})}</FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <Button type="submit">Login</Button>
+        <Button type="submit">{t('login.title')}</Button>
       </form>
     </Form>
   )

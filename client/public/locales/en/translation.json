@@ -1,0 +1,21 @@
+{
+    "login": {
+        "title": "Login",
+        "username": "Username",
+        "password": "Password",
+        "your": "This is your {{text}}",
+        "error": {
+            "title": "Error",
+            "back-to-login": "Go Back to login"
+        }
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Welcome {{name}}",
+        "logout": "Logout",
+        "error": {
+            "title": "You must be logged in to see the Dashboard",
+            "back-to-login": "Go Back to login"
+        }
+    }
+}
