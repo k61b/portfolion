@@ -2,7 +2,6 @@ package storage
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,6 +10,7 @@ import (
 
 	"github.com/kayraberktuncer/portfolion/pkg/common/lib"
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
+	log "github.com/sirupsen/logrus"
 )
 
 type Storage struct {
@@ -27,13 +27,13 @@ func NewStorage() (*Storage, error) {
 
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("Error connecting to MongoDB:", err)
 		return nil, err
 	}
 
 	err = client.Ping(ctx, nil)
 	if err != nil {
-		log.Fatal(err)
+		log.Error("Error pinging MongoDB:", err)
 		return nil, err
 	}
 
@@ -53,7 +53,7 @@ func (s *Storage) CreateUser(user *models.User) error {
 	defer cancel()
 
 	if _, err := s.usersCollection.InsertOne(ctx, user); err != nil {
-		log.Fatal(err)
+		log.Error("Error inserting user:", err)
 		return err
 	}
 
@@ -70,7 +70,7 @@ func (s *Storage) GetUserByUsername(username string) (*models.User, error) {
 			return nil, nil
 		}
 
-		log.Fatal(err)
+		log.Error("Error retrieving user:", err)
 		return nil, err
 	}
 
@@ -86,7 +86,7 @@ func (s *Storage) CreateBookmark(username string, bookmark *models.Bookmark) err
 		bson.M{"username": username},
 		bson.M{"$push": bson.M{"bookmarks": bookmark}},
 	); err != nil {
-		log.Fatal(err)
+		log.Error("Error creating bookmark:", err)
 		return err
 	}
 
@@ -103,7 +103,7 @@ func (s *Storage) GetBookmarks(username string) ([]models.Bookmark, error) {
 			return nil, nil
 		}
 
-		log.Fatal(err)
+		log.Error("Error retrieving user:", err)
 		return nil, err
 	}
 
@@ -119,7 +119,7 @@ func (s *Storage) UpdateBookmark(username string, symbol string, bookmark *model
 		bson.M{"username": username, "bookmarks.symbol": symbol},
 		bson.M{"$set": bson.M{"bookmarks.$": bookmark}},
 	); err != nil {
-		log.Fatal(err)
+		log.Error("Error updating bookmark:", err)
 		return err
 	}
 
@@ -135,7 +135,7 @@ func (s *Storage) DeleteBookmark(username string, symbol string) error {
 		bson.M{"username": username},
 		bson.M{"$pull": bson.M{"bookmarks": bson.M{"symbol": symbol}}},
 	); err != nil {
-		log.Fatal(err)
+		log.Error("Error deleting bookmark:", err)
 		return err
 	}
 
@@ -152,7 +152,7 @@ func (s *Storage) CreateOrUpdateSymbol(symbol *models.Symbol) error {
 
 	_, err := s.symbolsCollection.UpdateOne(ctx, filter, update, opts)
 	if err != nil {
-		log.Println(err)
+		log.Error("Error creating or updating symbol:", err)
 		return err
 	}
 
@@ -170,7 +170,7 @@ func (s *Storage) GetSymbolValue(symbol string) (*models.Symbol, error) {
 			return nil, mongo.ErrNoDocuments
 		}
 
-		log.Println(err)
+		log.Error("Error retrieving symbol:", err)
 		return nil, err
 	}
 
@@ -184,12 +184,12 @@ func (s *Storage) GetSymbols() ([]models.Symbol, error) {
 	var symbols []models.Symbol
 	cursor, err := s.symbolsCollection.Find(ctx, bson.M{})
 	if err != nil {
-		log.Println(err)
+		log.Error("Error retrieving symbols:", err)
 		return nil, err
 	}
 
 	if err = cursor.All(ctx, &symbols); err != nil {
-		log.Println(err)
+		log.Error("Error retrieving symbols:", err)
 		return nil, err
 	}
 

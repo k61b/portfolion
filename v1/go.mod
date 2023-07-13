@@ -18,6 +18,7 @@ require (
 	github.com/go-openapi/swag v0.22.4 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/swaggo/files v1.0.1 // indirect
 	golang.org/x/net v0.11.0 // indirect
 	golang.org/x/tools v0.10.0 // indirect
