@@ -57,6 +57,9 @@ func (h *Handlers) Run() {
 	api := app.Group("/api/v1")
 
 	app.Get("/swagger/*", fiberSwagger.WrapHandler)
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.Redirect("/swagger/index.html")
+	})
 
 	api.Post("/session", h.Session)
 	api.Get("/auth", h.AuthMiddleware, h.Auth)

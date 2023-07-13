@@ -14,78 +14,6 @@ import (
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
 )
 
-// GetSymbols godoc
-// @Summary Get Searched symbols
-// @Description Get Searched symbols
-// @Tags Symbols
-// @Accept  json
-// @Produce  json
-// @Param symbol path string true "Symbol"
-// @Success 200 {object} models.Symbol
-// @Router /search/{symbol} [get]
-func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
-	symbol := c.Params("symbol")
-	if symbol == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"message": "Invalid symbol",
-		})
-	}
-
-	url := fmt.Sprintf("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=%s&apikey=%s", symbol, lib.GoDotEnvVariable("API_KEY"))
-
-	resp, err := http.Get(url)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error making the request",
-		})
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error reading the response body",
-		})
-	}
-
-	var data map[string]interface{}
-	err = json.Unmarshal(body, &data)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error parsing JSON",
-		})
-	}
-
-	results, ok := data["bestMatches"].([]interface{})
-	if !ok {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"message": "Error retrieving search results",
-		})
-	}
-
-	var searchResults []fiber.Map
-
-	for _, result := range results {
-		searchResult, ok := result.(map[string]interface{})
-		if !ok {
-			continue
-		}
-
-		searchResultMap := fiber.Map{
-			"symbol":      searchResult["1. symbol"],
-			"name":        searchResult["2. name"],
-			"type":        searchResult["3. type"],
-			"region":      searchResult["4. region"],
-			"currency":    searchResult["8. currency"],
-			"match_score": searchResult["9. matchScore"],
-		}
-
-		searchResults = append(searchResults, searchResultMap)
-	}
-
-	return c.JSON(searchResults)
-}
-
 const (
 	symbolsPerBatch = 5
 	batchInterval   = 2 * time.Minute
@@ -162,4 +90,121 @@ func processSymbols(h *Handlers, symbols []models.Symbol) {
 			continue
 		}
 	}
+}
+
+func (h *Handlers) CheckAndAddOrUpdateSymbol(symbol string) (*models.Symbol, error) {
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=%s&apikey=%s", symbol, lib.GoDotEnvVariable("API_KEY"))
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("error making the request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("error reading the response body: %v", err)
+	}
+
+	var data map[string]map[string]interface{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing JSON: %v", err)
+	}
+
+	globalQuote, ok := data["Global Quote"]
+	if !ok {
+		return nil, fmt.Errorf("error retrieving global quote")
+	}
+
+	if len(globalQuote) == 0 {
+		return nil, fmt.Errorf("invalid symbol")
+	}
+
+	currentPrice, _ := strconv.ParseFloat(globalQuote["05. price"].(string), 64)
+	symbolName := globalQuote["01. symbol"].(string)
+
+	symbolData := models.Symbol{
+		Symbol: symbolName,
+		Price:  currentPrice,
+	}
+
+	err = h.store.CreateOrUpdateSymbol(&symbolData)
+	if err != nil {
+		return nil, fmt.Errorf("error updating symbol data: %v", err)
+	}
+
+	return &symbolData, nil
+}
+
+// SearchSymbol godoc
+// @Summary Search symbol
+// @Description Search symbol
+// @Tags Symbols
+// @Accept  json
+// @Produce  json
+// @Param symbol path string true "Symbol"
+// @Success 200 {object} models.Symbol
+// @Router /search/{symbol} [get]
+func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
+	symbol := c.Params("symbol")
+	if symbol == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "Invalid symbol",
+		})
+	}
+
+	url := fmt.Sprintf("https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=%s&apikey=%s", symbol, lib.GoDotEnvVariable("API_KEY"))
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error making the request",
+		})
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error reading the response body",
+		})
+	}
+
+	var data map[string]interface{}
+	err = json.Unmarshal(body, &data)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error parsing JSON",
+		})
+	}
+
+	results, ok := data["bestMatches"].([]interface{})
+	if !ok {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Error retrieving search results",
+		})
+	}
+
+	var searchResults []fiber.Map
+
+	for _, result := range results {
+		searchResult, ok := result.(map[string]interface{})
+		if !ok {
+			continue
+		}
+
+		searchResultMap := fiber.Map{
+			"symbol":      searchResult["1. symbol"],
+			"name":        searchResult["2. name"],
+			"type":        searchResult["3. type"],
+			"region":      searchResult["4. region"],
+			"currency":    searchResult["8. currency"],
+			"match_score": searchResult["9. matchScore"],
+		}
+
+		searchResults = append(searchResults, searchResultMap)
+	}
+
+	return c.JSON(searchResults)
 }

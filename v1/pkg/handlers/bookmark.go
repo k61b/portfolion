@@ -17,7 +17,7 @@ import (
 // CreateBookmark godoc
 // @Summary Create a new bookmark
 // @Description Creates a new bookmark for the authenticated user
-// @Tags bookmarks
+// @Tags Bookmarks
 // @Accept json
 // @Produce json
 // @Param body body models.Bookmark true "Bookmark object"
@@ -38,25 +38,15 @@ func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 		})
 	}
 
+	symbolData, err := h.CheckAndAddOrUpdateSymbol(b.Symbol)
+	if err != nil {
+		return err
+	}
+
+	b.Symbol = symbolData.Symbol
+
 	if err := h.store.CreateBookmark(username, &b); err != nil {
 		return err
-	}
-
-	// Add symbol to symbols collection if it doesn't exist and set price to 0
-	symbolData, err := h.store.GetSymbolValue(b.Symbol)
-	if err != nil && err != mongo.ErrNoDocuments {
-		return err
-	}
-
-	if symbolData == nil {
-		newSymbol := &models.Symbol{
-			Symbol: b.Symbol,
-			Price:  0,
-		}
-
-		if err := h.store.CreateOrUpdateSymbol(newSymbol); err != nil {
-			return err
-		}
 	}
 
 	return c.JSON(b)
@@ -65,7 +55,7 @@ func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 // GetBookmarks godoc
 // @Summary Get all bookmarks
 // @Description Retrieves all bookmarks for the authenticated user
-// @Tags bookmarks
+// @Tags Bookmarks
 // @Accept json
 // @Produce json
 // @Success 200 {array} models.Bookmark
@@ -159,7 +149,7 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 // UpdateBookmark godoc
 // @Summary Update a bookmark
 // @Description Updates a bookmark for the authenticated user
-// @Tags bookmarks
+// @Tags Bookmarks
 // @Accept json
 // @Produce json
 // @Param symbol path string true "Symbol"
@@ -197,7 +187,7 @@ func (h *Handlers) UpdateBookmark(c *fiber.Ctx) error {
 // DeleteBookmark godoc
 // @Summary Delete a bookmark
 // @Description Deletes a bookmark for the authenticated user
-// @Tags bookmarks
+// @Tags Bookmarks
 // @Accept json
 // @Produce json
 // @Param symbol path string true "Symbol"

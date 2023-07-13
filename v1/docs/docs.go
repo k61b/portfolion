@@ -31,7 +31,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "User authentication",
                 "responses": {
@@ -59,7 +59,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bookmarks"
+                    "Bookmarks"
                 ],
                 "summary": "Get all bookmarks",
                 "responses": {
@@ -88,9 +88,9 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bookmarks"
+                    "Bookmarks"
                 ],
-                "summary": "Create a new bookmark",
+                "summary": "Create a new Bookmark",
                 "parameters": [
                     {
                         "description": "Bookmark object",
@@ -127,7 +127,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bookmarks"
+                    "Bookmarks"
                 ],
                 "summary": "Update a bookmark",
                 "parameters": [
@@ -171,7 +171,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "bookmarks"
+                    "Bookmarks"
                 ],
                 "summary": "Delete a bookmark",
                 "parameters": [
@@ -208,7 +208,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "User logout",
                 "responses": {
@@ -223,7 +223,7 @@ const docTemplate = `{
         },
         "/search/{symbol}": {
             "get": {
-                "description": "Get Searched symbols",
+                "description": "Search symbol",
                 "consumes": [
                     "application/json"
                 ],
@@ -233,7 +233,7 @@ const docTemplate = `{
                 "tags": [
                     "Symbols"
                 ],
-                "summary": "Get Searched symbols",
+                "summary": "Search symbol",
                 "parameters": [
                     {
                         "type": "string",
@@ -263,7 +263,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "Auth"
                 ],
                 "summary": "User session",
                 "parameters": [
