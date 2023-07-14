@@ -1,4 +1,5 @@
 export interface IUser {
+  avatar: string
   username: string
   bookmarks: {
     symbol: string

@@ -43,6 +43,7 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 
 		u.Password = string(hash)
 		u.Bookmarks = []models.Bookmark{}
+		u.Avatar = lib.GoDotEnvVariable("AVATAR_API") + u.Username + ".svg"
 
 		if err := h.store.CreateUser(&u); err != nil {
 			log.Error("Error creating user:", err)
@@ -123,6 +124,7 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 
 	userResult := fiber.Map{
 		"username":        user.Username,
+		"avatar":          user.Avatar,
 		"bookmarks":       user.Bookmarks,
 		"value":           value,
 		"profit_and_loss": profitAndLoss,
