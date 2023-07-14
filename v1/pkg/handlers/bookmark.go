@@ -12,6 +12,7 @@ import (
 
 	"github.com/kayraberktuncer/portfolion/pkg/common/lib"
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
+	log "github.com/sirupsen/logrus"
 )
 
 // CreateBookmark godoc
@@ -28,11 +29,13 @@ func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 	var b models.Bookmark
 
 	if err := c.BodyParser(&b); err != nil {
+		log.Error("Error parsing body:", err)
 		return err
 	}
 
 	username := c.Locals("username").(string)
 	if username == "" {
+		log.Error("Invalid username")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid username",
 		})
@@ -40,12 +43,14 @@ func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 
 	symbolData, err := h.CheckAndAddOrUpdateSymbol(b.Symbol)
 	if err != nil {
+		log.Error("Error checking symbol:", err)
 		return err
 	}
 
 	b.Symbol = symbolData.Symbol
 
 	if err := h.store.CreateBookmark(username, &b); err != nil {
+		log.Error("Error creating bookmark:", err)
 		return err
 	}
 
@@ -64,6 +69,7 @@ func (h *Handlers) CreateBookmark(c *fiber.Ctx) error {
 func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 	username := c.Locals("username").(string)
 	if username == "" {
+		log.Error("Invalid username")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid username",
 		})
@@ -71,6 +77,7 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 
 	bookmarks, err := h.store.GetBookmarks(username)
 	if err != nil {
+		log.Error("Error retrieving bookmarks:", err)
 		return err
 	}
 
@@ -160,6 +167,7 @@ func (h *Handlers) GetBookmarks(c *fiber.Ctx) error {
 func (h *Handlers) UpdateBookmark(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	if symbol == "" {
+		log.Error("Invalid symbol")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid symbol",
 		})
@@ -167,17 +175,20 @@ func (h *Handlers) UpdateBookmark(c *fiber.Ctx) error {
 
 	var b models.Bookmark
 	if err := c.BodyParser(&b); err != nil {
+		log.Error("Error parsing body:", err)
 		return err
 	}
 
 	username := c.Locals("username").(string)
 	if username == "" {
+		log.Error("Invalid username")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid username",
 		})
 	}
 
 	if err := h.store.UpdateBookmark(username, symbol, &b); err != nil {
+		log.Error("Error updating bookmark:", err)
 		return err
 	}
 
@@ -197,6 +208,7 @@ func (h *Handlers) UpdateBookmark(c *fiber.Ctx) error {
 func (h *Handlers) DeleteBookmark(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	if symbol == "" {
+		log.Error("Invalid symbol")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid symbol",
 		})
@@ -204,12 +216,14 @@ func (h *Handlers) DeleteBookmark(c *fiber.Ctx) error {
 
 	username := c.Locals("username").(string)
 	if username == "" {
+		log.Error("Invalid username")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid username",
 		})
 	}
 
 	if err := h.store.DeleteBookmark(username, symbol); err != nil {
+		log.Error("Error deleting bookmark:", err)
 		return err
 	}
 

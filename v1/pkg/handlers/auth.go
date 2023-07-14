@@ -8,6 +8,8 @@ import (
 
 	"github.com/kayraberktuncer/portfolion/pkg/common/lib"
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Session godoc
@@ -22,17 +24,20 @@ import (
 func (h *Handlers) Session(c *fiber.Ctx) error {
 	var u models.User
 	if err := c.BodyParser(&u); err != nil {
+		log.Error("Error parsing body:", err)
 		return err
 	}
 
 	user, err := h.store.GetUserByUsername(u.Username)
 	if err != nil {
+		log.Error("Error retrieving user:", err)
 		return err
 	}
 
 	if user == nil {
 		hash, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 		if err != nil {
+			log.Error("Error hashing password:", err)
 			return err
 		}
 
@@ -40,12 +45,14 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 		u.Bookmarks = []models.Bookmark{}
 
 		if err := h.store.CreateUser(&u); err != nil {
+			log.Error("Error creating user:", err)
 			return err
 		}
 
 		user = &u
 	} else {
 		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(u.Password)); err != nil {
+			log.Error("Invalid username or password:", err)
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 				"message": "Invalid username or password",
 			})
@@ -54,6 +61,7 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 
 	token, err := lib.GenerateJWT(user.Username)
 	if err != nil {
+		log.Error("Error generating JWT:", err)
 		return err
 	}
 
@@ -80,6 +88,7 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 func (h *Handlers) Auth(c *fiber.Ctx) error {
 	token := c.Cookies("token")
 	if token == "" {
+		log.Error("Missing token")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Missing token",
 		})
@@ -87,6 +96,7 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 
 	username, err := lib.ParseJWT(token)
 	if err != nil {
+		log.Error("Invalid token:", err)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Invalid token",
 		})
@@ -94,6 +104,7 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 
 	user, err := h.store.GetUserByUsername(username)
 	if err != nil {
+		log.Error("Error retrieving user:", err)
 		return err
 	}
 
@@ -102,6 +113,7 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 	for _, bookmark := range user.Bookmarks {
 		symbol, err := h.store.GetSymbolValue(bookmark.Symbol)
 		if err != nil {
+			log.Error("Error retrieving symbol:", err)
 			return err
 		}
 
@@ -145,6 +157,7 @@ func (h *Handlers) Logout(c *fiber.Ctx) error {
 func (h *Handlers) UserBalance(c *fiber.Ctx) error {
 	token := c.Cookies("token")
 	if token == "" {
+		log.Error("Missing token")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Missing token",
 		})
@@ -152,6 +165,7 @@ func (h *Handlers) UserBalance(c *fiber.Ctx) error {
 
 	username, err := lib.ParseJWT(token)
 	if err != nil {
+		log.Error("Invalid token:", err)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Invalid token",
 		})
@@ -159,6 +173,7 @@ func (h *Handlers) UserBalance(c *fiber.Ctx) error {
 
 	user, err := h.store.GetUserByUsername(username)
 	if err != nil {
+		log.Error("Error retrieving user:", err)
 		return err
 	}
 
@@ -166,6 +181,7 @@ func (h *Handlers) UserBalance(c *fiber.Ctx) error {
 	for _, bookmark := range user.Bookmarks {
 		symbol, err := h.store.GetSymbolValue(bookmark.Symbol)
 		if err != nil {
+			log.Error("Error retrieving symbol:", err)
 			return err
 		}
 

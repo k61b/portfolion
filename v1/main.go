@@ -21,5 +21,7 @@ func main() {
 
 	handlers := handlers.NewHandlers(":"+lib.GoDotEnvVariable("PORT"), store)
 
+	lib.Logger()
+
 	handlers.Run()
 }

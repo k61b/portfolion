@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gofiber/fiber/v2"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/kayraberktuncer/portfolion/pkg/common/lib"
 	"github.com/kayraberktuncer/portfolion/pkg/common/models"
@@ -24,13 +25,13 @@ func (h *Handlers) UpdateSymbolValues() {
 	symbols, err := h.store.GetSymbols()
 
 	if err != nil {
-		fmt.Println("Error retrieving symbols:", err)
+		log.Warning("Error getting symbols from the database:", err)
 		return
 	}
 
 	numSymbols := len(symbols)
 	if numSymbols == 0 {
-		fmt.Println("No symbols found in the database.")
+		log.Warning("No symbols found in the database")
 		return
 	}
 
@@ -56,27 +57,27 @@ func processSymbols(h *Handlers, symbols []models.Symbol) {
 
 		resp, err := http.Get(url)
 		if err != nil {
-			fmt.Println("Error making the request:", err)
+			log.Warning("Error making the request:", err)
 			continue
 		}
 		defer resp.Body.Close()
 
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
-			fmt.Println("Error reading the response body:", err)
+			log.Warning("Error reading the response body:", err)
 			continue
 		}
 
 		var data map[string]map[string]interface{}
 		err = json.Unmarshal(body, &data)
 		if err != nil {
-			fmt.Println("Error parsing JSON:", err)
+			log.Warning("Error parsing JSON:", err)
 			continue
 		}
 
 		globalQuote, ok := data["Global Quote"]
 		if !ok {
-			fmt.Println("Error retrieving global quote")
+			log.Warning("Error retrieving global quote")
 			continue
 		}
 
@@ -86,7 +87,7 @@ func processSymbols(h *Handlers, symbols []models.Symbol) {
 
 		err = h.store.CreateOrUpdateSymbol(&symbol)
 		if err != nil {
-			fmt.Println("Error updating symbol data:", err)
+			log.Warning("Error updating symbol:", err)
 			continue
 		}
 	}
@@ -97,27 +98,32 @@ func (h *Handlers) CheckAndAddOrUpdateSymbol(symbol string) (*models.Symbol, err
 
 	resp, err := http.Get(url)
 	if err != nil {
+		log.Error("Error making the request:", err)
 		return nil, fmt.Errorf("error making the request: %v", err)
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Error("Error reading the response body:", err)
 		return nil, fmt.Errorf("error reading the response body: %v", err)
 	}
 
 	var data map[string]map[string]interface{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
+		log.Error("Error parsing JSON:", err)
 		return nil, fmt.Errorf("error parsing JSON: %v", err)
 	}
 
 	globalQuote, ok := data["Global Quote"]
 	if !ok {
+		log.Error("Error retrieving global quote")
 		return nil, fmt.Errorf("error retrieving global quote")
 	}
 
 	if len(globalQuote) == 0 {
+		log.Error("Invalid symbol")
 		return nil, fmt.Errorf("invalid symbol")
 	}
 
@@ -131,6 +137,7 @@ func (h *Handlers) CheckAndAddOrUpdateSymbol(symbol string) (*models.Symbol, err
 
 	err = h.store.CreateOrUpdateSymbol(&symbolData)
 	if err != nil {
+		log.Error("Error updating symbol data:", err)
 		return nil, fmt.Errorf("error updating symbol data: %v", err)
 	}
 
@@ -149,6 +156,7 @@ func (h *Handlers) CheckAndAddOrUpdateSymbol(symbol string) (*models.Symbol, err
 func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	if symbol == "" {
+		log.Error("Invalid symbol")
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Invalid symbol",
 		})
@@ -158,6 +166,7 @@ func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 
 	resp, err := http.Get(url)
 	if err != nil {
+		log.Error("Error making the request:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Error making the request",
 		})
@@ -166,6 +175,7 @@ func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
+		log.Error("Error reading the response body:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Error reading the response body",
 		})
@@ -174,6 +184,7 @@ func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 	var data map[string]interface{}
 	err = json.Unmarshal(body, &data)
 	if err != nil {
+		log.Error("Error parsing JSON:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Error parsing JSON",
 		})
@@ -181,6 +192,7 @@ func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 
 	results, ok := data["bestMatches"].([]interface{})
 	if !ok {
+		log.Error("Error retrieving search results")
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"message": "Error retrieving search results",
 		})
@@ -191,6 +203,7 @@ func (h *Handlers) SearchSymbol(c *fiber.Ctx) error {
 	for _, result := range results {
 		searchResult, ok := result.(map[string]interface{})
 		if !ok {
+			log.Warning("Error retrieving search result")
 			continue
 		}
 
