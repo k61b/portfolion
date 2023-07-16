@@ -13,6 +13,10 @@
         "title": "Dashboard",
         "welcome": "Hoşgeldin {{name}}",
         "logout": "Çıkış Yap",
+        "user": {
+            "total": "Toplam {{value}}",
+            "profit_and_loss": "K/Z {{value}}"
+        },
         "error": {
             "title": "Dashboard'ı görebilmek için giriş yapmalısınız.",
             "back-to-login": "Girişe Dön"
