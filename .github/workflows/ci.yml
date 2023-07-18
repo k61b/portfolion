@@ -33,7 +33,7 @@ jobs:
         working-directory: ./v1
         run: go fmt ./... && go vet ./...
         
-      - name: Checkout code (Next.js)
+      - name: Checkout code Client
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -41,10 +41,10 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Next.js dependencies
+      - name: Install Client dependencies
         working-directory: ./client
         run: npm ci
 
-      - name: Build Next.js app
+      - name: Build Client app
         working-directory: ./client
         run: npm run build
