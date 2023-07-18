@@ -34,7 +34,7 @@ jobs:
         working-directory: ./v1
         run: go fmt ./... && go vet ./...
 
-      - name: Build and Push Docker image
+      - name: Build and Push Go Docker image
         working-directory: ./v1
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -44,7 +44,7 @@ jobs:
           docker build -t kayraberktuncer/portfolion-service:0.1 .
           docker push kayraberktuncer/portfolion-service:0.1
 
-      - name: Checkout code (Next.js)
+      - name: Checkout code Client
         uses: actions/checkout@v3
 
       - name: Set up Node.js
@@ -52,10 +52,20 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install Next.js dependencies
+      - name: Install Client dependencies
         working-directory: ./client
         run: npm ci
 
-      - name: Build Next.js app
+      - name: Build Client app
         working-directory: ./client
         run: npm run build
+
+      - name: Build and Push Client Docker image
+        working-directory: ./client
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run: |
+          echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+          docker build -t kayraberktuncer/portfolion-client:0.1 .
+          docker push kayraberktuncer/portfolion-client:0.1
