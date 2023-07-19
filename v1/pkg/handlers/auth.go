@@ -43,7 +43,7 @@ func (h *Handlers) Session(c *fiber.Ctx) error {
 
 		u.Password = string(hash)
 		u.Bookmarks = []models.Bookmark{}
-		u.Avatar = lib.GoDotEnvVariable("AVATAR_API") + u.Username + ".svg"
+		u.Avatar = lib.GoDotEnvVariable("AVATAR_API") + u.Username + lib.GoDotEnvVariable("AVATAR_API_OPTIONS")
 
 		if err := h.store.CreateUser(&u); err != nil {
 			log.Error("Error creating user:", err)

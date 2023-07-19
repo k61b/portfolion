@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 export default function Dashboard() {
   const { user } = useContext(AuthContext)
   const { t } = useTranslation()
-
+  console.log(user?.avatar)
   return (
     <div className="bg-slate-50">
       {user ? (
