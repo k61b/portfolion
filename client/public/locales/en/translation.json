@@ -37,8 +37,8 @@
       "placeholder": "Quantity purchased"
     },
     "button": {
-      "add": "Ekle",
-      "close": "Kapat"
+      "add": "Add",
+      "close": "Close"
     }
   }
 }
