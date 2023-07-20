@@ -1,6 +1,9 @@
+import { useTranslation } from 'react-i18next'
 import BookmarkForm from './BookmarkForm'
 
 export default function Modal({ visible = false }) {
+  const { t } = useTranslation()
+
   if (!visible) return null
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex justify-center items-center">
@@ -9,12 +12,11 @@ export default function Modal({ visible = false }) {
           className="scroll-m-20 text-2xl font-semibold tracking-tight text-center text-slate-900 mb-4
         border-b pb-2 transition-colors first:mt-0"
         >
-          Add Bookmark
+          {t('popup.title')}
         </h3>
         <div>
           <BookmarkForm />
         </div>
-        <div className="flex flex-row justify-around items-center"></div>
       </div>
     </div>
   )

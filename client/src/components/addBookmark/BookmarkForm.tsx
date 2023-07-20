@@ -7,13 +7,13 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useTranslation } from 'react-i18next'
 
 const formSchema = z.object({
   added_price: z.string().min(1, {
@@ -29,6 +29,7 @@ const formSchema = z.object({
 
 export default function BookmarkForm() {
   const [error, setError] = useState(null)
+  const { t } = useTranslation()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,37 +66,33 @@ export default function BookmarkForm() {
           control={form.control}
           name="symbol"
           render={({ field }) => (
-            <FormItem>
-              <FormLabel>Symbol</FormLabel>
+            <FormItem className='mb-8'>
+              <FormLabel className='text-slate-900'>{t('popup.symbol.title')}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="search symbol"
+                  placeholder={t('popup.symbol.placeholder')}
                   {...field}
                   className="text-slate-900"
                 />
               </FormControl>
-              <FormDescription>
-                Symbol of the investment you will add
-              </FormDescription>
               <FormMessage />
             </FormItem>
           )}
         />
-        <div className="md:flex mb-8">
+        <div className="md:flex mb-8 space-x-4">
           <FormField
             control={form.control}
             name="added_price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Added Price</FormLabel>
+                <FormLabel className='text-slate-900'>{t('popup.added_price.title')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="added price"
+                    placeholder={t('popup.added_price.placeholder')}
                     {...field}
                     className="text-slate-900"
                   />
                 </FormControl>
-                <FormDescription>Price at time of purchase</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -106,15 +103,14 @@ export default function BookmarkForm() {
             name="pieces"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Pieces</FormLabel>
+                <FormLabel className='text-slate-900'>{t('popup.pieces.title')}</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="pieces"
+                    placeholder={t('popup.pieces.placeholder')}
                     {...field}
                     className="text-slate-900"
                   />
                 </FormControl>
-                <FormDescription>Quantity purchased</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -123,7 +119,7 @@ export default function BookmarkForm() {
 
         <div className="flex flex-row justify-around items-center">
           <Button className="bg-green-700 hover:bg-green-800" type="submit">
-            Add
+            {t('popup.button.add')}
           </Button>
           <Button
             className="bg-red-700 hover:bg-red-800"
@@ -131,7 +127,7 @@ export default function BookmarkForm() {
               window.location.reload()
             }}
           >
-            Close
+            {t('popup.button.close')}
           </Button>
         </div>
       </form>
