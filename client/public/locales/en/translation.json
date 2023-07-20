@@ -1,25 +1,44 @@
 {
-    "login": {
-        "title": "Login",
-        "username": "Username",
-        "password": "Password",
-        "your": "This is your {{text}}",
-        "error": {
-            "title": "Error",
-            "back-to-login": "Go Back to login"
-        }
-    },
-    "dashboard": {
-        "title": "Dashboard",
-        "welcome": "Welcome {{name}}",
-        "logout": "Logout",
-        "user": {
-            "total": "Total {{value}}",
-            "profit_and_loss": "P/L {{value}}"
-        },
-        "error": {
-            "title": "You must be logged in to see the Dashboard",
-            "back-to-login": "Go Back to login"
-        }
+  "login": {
+    "title": "Login",
+    "username": "Username",
+    "password": "Password",
+    "your": "This is your {{text}}",
+    "error": {
+      "title": "Error",
+      "back-to-login": "Go Back to login"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome {{name}}",
+    "logout": "Logout",
+    "user": {
+      "total": "Total {{value}}",
+      "profit_and_loss": "P/L {{value}}"
+    },
+    "error": {
+      "title": "You must be logged in to see the Dashboard",
+      "back-to-login": "Go Back to login"
+    }
+  },
+  "popup": {
+    "title": "Add Bookmark",
+    "symbol": {
+      "title": "Symbol",
+      "placeholder": "Symbol of the investment you will add"
+    },
+    "added_price": {
+      "title": "Added Price",
+      "placeholder": "Price at time of purchase"
+    },
+    "pieces": {
+      "title": "Pieces",
+      "placeholder": "Quantity purchased"
+    },
+    "button": {
+      "add": "Add",
+      "close": "Close"
+    }
+  }
 }

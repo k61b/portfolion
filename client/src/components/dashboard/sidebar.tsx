@@ -29,13 +29,9 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="flex flex-row justify-around items-center md:items-stretch md:flex-col p-4 bg-slate-50 rounded shadow-xl h-max md:h-screen ">
+    <div className="flex flex-row justify-around items-center md:items-stretch md:flex-col p-4 bg-slate-50 rounded shadow-xl h-max md:h-screen md:w-auto">
       <Avatar>
-        <AvatarImage
-          className="w-36"
-          src={`https://api.dicebear.com/6.x/big-smile/svg?seed=${user?.avatar}&radius=50&backgroundType=gradientLinear&accessories=catEars,glasses,mustache,sailormoonCrown,sleepMask,sunglasses&eyes=angry,confused,normal,sad,sleepy,starstruck,winking,cheery&hairColor=220f00,238d80,3a1a00,605de4,71472d,d56c0c&skinColor=8c5a2b,a47539,c99c62,e2ba87,efcc9f,643d19,f5d7b1&backgroundColor=ffd5dc,d1d4f9,c0aede,b6e3f4`}
-          alt='avatar'
-        />
+        <AvatarImage className="w-36" src={user?.avatar} alt="avatar" />
       </Avatar>
       <div className="mt-4 flex flex-col justify-center">
         <h1 className="text-2xl font-semibold text-slate-900 mb-3">

@@ -1,25 +1,44 @@
 {
-    "login": {
-        "title": "Giriş",
-        "username": "Kullanıcı Adı",
-        "password": "Şifre",
-        "your": "Bu senin {{text}}",
-        "error": {
-            "title": "Hata",
-            "back-to-login": "Girişe Dön"
-        }
-    },
-    "dashboard": {
-        "title": "Dashboard",
-        "welcome": "Hoşgeldin {{name}}",
-        "logout": "Çıkış Yap",
-        "user": {
-            "total": "Toplam {{value}}",
-            "profit_and_loss": "K/Z {{value}}"
-        },
-        "error": {
-            "title": "Dashboard'ı görebilmek için giriş yapmalısınız.",
-            "back-to-login": "Girişe Dön"
-        }
+  "login": {
+    "title": "Giriş",
+    "username": "Kullanıcı Adı",
+    "password": "Şifre",
+    "your": "Bu senin {{text}}",
+    "error": {
+      "title": "Hata",
+      "back-to-login": "Girişe Dön"
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Hoşgeldin {{name}}",
+    "logout": "Çıkış Yap",
+    "user": {
+      "total": "Toplam {{value}}",
+      "profit_and_loss": "K/Z {{value}}"
+    },
+    "error": {
+      "title": "Dashboard'ı görebilmek için giriş yapmalısınız.",
+      "back-to-login": "Girişe Dön"
+    }
+  },
+  "popup": {
+    "title": "Yatırım Ekle",
+    "symbol": {
+      "title": "Sembol",
+      "placeholder": "Ekleyeceğiniz yatırımın simgesi"
+    },
+    "added_price": {
+      "title": "Eklenen Fiyat",
+      "placeholder": "Satın alma sırasındaki fiyat"
+    },
+    "pieces": {
+      "title": "Adet",
+      "placeholder": "Satın alınan miktar"
+    },
+    "button": {
+      "add": "Ekle",
+      "close": "Kapat"
+    }
+  }
 }
