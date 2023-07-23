@@ -125,7 +125,6 @@ func (h *Handlers) Auth(c *fiber.Ctx) error {
 	userResult := fiber.Map{
 		"username":        user.Username,
 		"avatar":          user.Avatar,
-		"bookmarks":       user.Bookmarks,
 		"value":           value,
 		"profit_and_loss": profitAndLoss,
 	}

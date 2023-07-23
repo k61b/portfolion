@@ -76,6 +76,7 @@ JWT_SECRET=YOUR_JWT_SECRET_KEY
 API_KEY=YOUR_EXTERNAL_API_KEY
 ALLOWED_ORIGINS=YOUR_ALLOWED_ORIGINS
 AVATAR_API=YOUR_AVATAR_API_URL
+AVATAR_API_OPTIONS=YOUR_AVATAR_API_OPTIONS
 ```
 
 ## Usage
@@ -110,6 +111,7 @@ Here is a list of environment variables used in the application:
 - `API_KEY`: API key for external API integration.
 - `ALLOWED_ORIGINS`: Comma-separated list of allowed origins for CORS.
 - `AVATAR_API`: URL for the avatar API service.
+- `AVATAR_API_OPTIONS`: Options for the avatar API service.
 
 ## Contributing
 
