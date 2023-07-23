@@ -1,13 +1,18 @@
-import Popup from "../addBookmark/Popup";
+import Popup from '../addBookmark/Popup'
+import List from './list'
 
 export default function Table() {
+
   return (
-    <div className="p-4 bg-slate-900 rounded shadow-xl flex flex-row items-center justify-between">
-      <p className="text-white">dashboard</p>
-      <h3 className="text-white">PORTFOLION</h3>
-      <p className="text-white">
-        <Popup />
-      </p>
+    <div>
+      <div className="p-4 bg-slate-900 rounded-b shadow-xl flex flex-row items-center justify-between">
+        <h4 className="text-white scroll-m-20 text-xl font-semibold tracking-tight">Dashboard</h4>
+        <h3 className="text-white scroll-m-20 text-2xl font-semibold tracking-tight">PORTFOLION</h3>
+        <p className="text-white">
+          <Popup />
+        </p>
+      </div>
+      <List />
     </div>
   )
 }
