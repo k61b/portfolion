@@ -10,13 +10,22 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome {{name}}",
-    "logout": "Logout",
-    "user": {
-      "total": "Total {{value}}",
-      "profit_and_loss": "P/L {{value}}"
+    "sidebar": {
+      "welcome": "Welcome {{name}}",
+      "logout": "Logout",
+      "user": {
+        "total": "Total {{value}}",
+        "profit_and_loss": "P/L {{value}}"
+      }
     },
+    "table": {
+      "symbol": "Symbol",
+      "added_price": "Added Price",
+      "pieces": "Pieces",
+      "current_price": "Current Price",
+      "profit_and_loss": "P/L"
+    },
+    "title": "Dashboard",
     "error": {
       "title": "You must be logged in to see the Dashboard",
       "back-to-login": "Go Back to login"

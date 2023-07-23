@@ -39,7 +39,7 @@ export default function Sidebar() {
         </h1>
 
         <span className="text-slate-700 mb-1">
-          {t('dashboard.user.total', { value: user?.value })}
+          {t('dashboard.sidebar.user.total', { value: user?.value })}
         </span>
 
         <span
@@ -47,7 +47,7 @@ export default function Sidebar() {
             'text-red-700': user && user.profit_and_loss < 0,
           })}
         >
-          {t('dashboard.user.profit_and_loss', {
+          {t('dashboard.sidebar.user.profit_and_loss', {
             value: user?.profit_and_loss,
           })}
         </span>
@@ -56,7 +56,7 @@ export default function Sidebar() {
         onClick={handleLogout}
         className="bg-slate-900 mt-auto w-max md:w-full"
       >
-        {t('dashboard.logout')}
+        {t('dashboard.sidebar.logout')}
       </Button>
     </div>
   )
