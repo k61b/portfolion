@@ -10,13 +10,22 @@
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Hoşgeldin {{name}}",
-    "logout": "Çıkış Yap",
-    "user": {
-      "total": "Toplam {{value}}",
-      "profit_and_loss": "K/Z {{value}}"
+    "sidebar": {
+      "welcome": "Hoşgeldin {{name}}",
+      "logout": "Çıkış Yap",
+      "user": {
+        "total": "Toplam {{value}}",
+        "profit_and_loss": "K/Z {{value}}"
+      }
     },
+    "table": {
+      "symbol": "Sembol",
+      "added_price": "Eklenen Fiyat",
+      "pieces": "Adet",
+      "current_price": "Güncel Fiyat",
+      "profit_and_loss": "K/Z"
+    },
+    "title": "Dashboard",
     "error": {
       "title": "Dashboard'ı görebilmek için giriş yapmalısınız.",
       "back-to-login": "Girişe Dön"

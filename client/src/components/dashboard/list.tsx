@@ -1,8 +1,10 @@
 import { useBookmark } from '@/hooks/data/useBookmark'
 import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
 
 export default function List() {
   const { bookmarks } = useBookmark()
+  const { t } = useTranslation()
 
   return (
     <div>
@@ -10,11 +12,17 @@ export default function List() {
         <div className="flex flex-col justify-center mt-3 p-9">
           <div className="bg-slate-900 text-white rounded">
             <ul className="grid grid-cols-5 gap-4 p-4">
-              <li className="text-center">Symbol</li>
-              <li className="text-center">Added Price</li>
-              <li className="text-center">Pieces</li>
-              <li className="text-center">Current Price</li>
-              <li className="text-center">P/L</li>
+              <li className="text-center">{t('dashboard.table.symbol')}</li>
+              <li className="text-center">
+                {t('dashboard.table.added_price')}
+              </li>
+              <li className="text-center">{t('dashboard.table.pieces')}</li>
+              <li className="text-center">
+                {t('dashboard.table.current_price')}
+              </li>
+              <li className="text-center">
+                {t('dashboard.table.profit_and_loss')}
+              </li>
             </ul>
           </div>
           {bookmarks?.map((bookmark: any, index: number) => (
