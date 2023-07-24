@@ -1,4 +1,10 @@
 {
+  "root": {
+    "title": "Portfolion",
+    "welcome": "Welcome to {{text}}",
+    "description": "is a simple web app that allows you to keep track of your stock portfolio.",
+    "link": "Get Started"
+  },
   "login": {
     "title": "Login",
     "username": "Username",
