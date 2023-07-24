@@ -11,7 +11,7 @@
   },
   "dashboard": {
     "sidebar": {
-      "welcome": "Welcome {{name}}",
+      "welcome": "Welcome",
       "logout": "Logout",
       "user": {
         "total": "Total {{value}}",

@@ -1,19 +1,30 @@
 import Logo from '@/components/logo/intex'
 import { Link } from 'react-router-dom'
+import styles from './root.module.css'
 
 export default function Root() {
   return (
-    <div
-      id="root"
-      className="flex flex-col items-center min-h-screen py-4 bg-slate-50 dark:bg-slate-800 text-slate-950 dark:text-slate-50"
-    >
-      <Logo />
-      <Link
-        to={'/login'}
-        className="italic underline underline-offset-1 text-slate-800"
-      >
-        go to login
-      </Link>
+    <div className={styles.container}>
+      <div className=" flex flex-col justify-center items-center h-screen text-white">
+        <Logo />
+        <h1 className="text-4xl font-semibold text-center">
+          Welcome to <span className="text-green-400">
+            Portfolion
+          </span>
+        </h1>
+        <p className="text-center mt-4">
+          <span className="text-green-400">Portfolion</span> is a simple web app
+          that allows you to keep track of your stock portfolio.
+        </p>
+        <div className="mt-4">
+          <Link
+            to={'/login'}
+            className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded"
+          >
+            Get Started
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }

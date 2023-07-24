@@ -9,7 +9,7 @@ export default function Popup() {
         <div>
           <button
             onClick={() => setShowModal(true)}
-            className="bg-white text-slate-900 px-3 py-2 rounded hover:scale-95 transition font-bold"
+            className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded"
           >
             +
           </button>

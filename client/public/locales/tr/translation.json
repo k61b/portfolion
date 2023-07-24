@@ -11,7 +11,7 @@
   },
   "dashboard": {
     "sidebar": {
-      "welcome": "Hoşgeldin {{name}}",
+      "welcome": "Hoşgeldin",
       "logout": "Çıkış Yap",
       "user": {
         "total": "Toplam {{value}}",
