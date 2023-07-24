@@ -1,4 +1,10 @@
 {
+  "root": {
+    "title": "Portfolion",
+    "welcome": "{{text}}'a hoşgeldiniz",
+    "description": "hisse senedi portföyünüzü takip etmenizi sağlayan basit bir web uygulamasıdır.",
+    "link": "Haydi Başlayalım"
+  },
   "login": {
     "title": "Giriş",
     "username": "Kullanıcı Adı",
@@ -11,7 +17,7 @@
   },
   "dashboard": {
     "sidebar": {
-      "welcome": "Hoşgeldin {{name}}",
+      "welcome": "Hoşgeldin",
       "logout": "Çıkış Yap",
       "user": {
         "total": "Toplam {{value}}",

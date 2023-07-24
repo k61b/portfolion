@@ -11,7 +11,7 @@ export default function List() {
       {bookmarks ? (
         <div className="flex flex-col justify-center mt-3 p-9">
           <div className="bg-slate-900 text-white rounded">
-            <ul className="grid grid-cols-5 gap-4 p-4">
+            <ul className="grid grid-cols-5 gap-4 p-4 font-medium">
               <li className="text-center">{t('dashboard.table.symbol')}</li>
               <li className="text-center">
                 {t('dashboard.table.added_price')}
@@ -35,8 +35,8 @@ export default function List() {
               <li className="text-center">{bookmark.pieces}</li>
               <li className="text-center">{bookmark.current_price}</li>
               <li
-                className={cn('text-center text-green-700', {
-                  'text-red-700': bookmark.profit_and_loss < 0,
+                className={cn('text-center text-green-500 font-medium', {
+                  'text-red-500': bookmark.profit_and_loss < 0,
                 })}
               >
                 {bookmark.profit_and_loss.toString().length > 7 ? (
